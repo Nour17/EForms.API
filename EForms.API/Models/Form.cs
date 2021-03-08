@@ -15,7 +15,7 @@ namespace EForms.API.Models
         public string InternalId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public int ColumnRepresentation { get; set; }
+        public int ColumnRepresentation { get; set; } = 1;
         public List<Section> Sections { get; set; }
         public List<Question> Questions { get; set; }
         // UserId: Array of Answers
@@ -24,5 +24,10 @@ namespace EForms.API.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [BsonDateTimeOptions]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+        public static implicit operator Form(Task<Form> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

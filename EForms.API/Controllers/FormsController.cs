@@ -65,11 +65,16 @@ namespace EForms.API.Controllers
             if (fetchedForm == null)
                 return NotFound("This form doesn't exist!!");
 
+            // BUG SHOULD BE FIXED HERE
+            // The new form should only have the updated properties only
             Form formToUpdate = new Form
             {
-                Name = formToUpdateDto.Name,
-                Description = formToUpdateDto.Description,
-                ColumnRepresentation = formToUpdateDto.ColumnRepresentation
+                Name = formToUpdateDto.Name != null ? formToUpdateDto.Name : fetchedForm.Name,
+                Description = formToUpdateDto.Description != null ? formToUpdateDto.Description : fetchedForm.Description,
+                ColumnRepresentation = formToUpdateDto.ColumnRepresentation != 0 ? formToUpdateDto.ColumnRepresentation : fetchedForm.ColumnRepresentation,
+                Sections = fetchedForm.Sections,
+                Questions = fetchedForm.Questions,
+                FormAnswers = fetchedForm.FormAnswers
             };
 
             var updatedForm = await _formRepository.UpdateForm<Form>(id, formToUpdate);
