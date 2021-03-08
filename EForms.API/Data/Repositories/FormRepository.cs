@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EForms.API.Data.Repositories.Implementations
+namespace EForms.API.Data.Repositories
 {
     public class FormRepository : IFormRepository
     {

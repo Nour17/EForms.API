@@ -24,10 +24,5 @@ namespace EForms.API.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [BsonDateTimeOptions]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
-
-        public static implicit operator Form(Task<Form> v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

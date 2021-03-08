@@ -1,5 +1,5 @@
 using EForms.API.Helpers;
-using EForms.API.Data.Repositories.Implementations;
+using EForms.API.Data.Repositories;
 using EForms.API.Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EForms.API.Services;
+using EForms.API.Services.Interfaces;
 
 namespace EForms.API
 {
@@ -36,8 +38,12 @@ namespace EForms.API
                options.Database = Configuration.GetSection("EFormDatabaseString:DatabaseName").Value;
            });
 
+            // Repositories
             services.AddTransient<IFormRepository, FormRepository>();
             services.AddTransient<IQuestionRepository, QuestionRepository>();
+
+            // Services
+            services.AddTransient<ISectionService, SectionService>();
 
             services.AddCors();
         }

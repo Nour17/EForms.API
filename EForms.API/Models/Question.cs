@@ -31,9 +31,8 @@ namespace EForms.API.Models
 
     public class Question
     {
-        [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string InternalId  { get; set; }
+        public string InternalId { get; set; } = ObjectId.GenerateNewId().ToString();
         public string Header { get; set; } = "Untitled";
         public string Description { get; set; }
         public bool IsRequired { get; set; } = false;

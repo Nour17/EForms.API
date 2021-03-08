@@ -7,7 +7,7 @@ using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace EForms.API.Data.Repositories.Implementations
+namespace EForms.API.Data.Repositories
 {
     public class QuestionRepository : IQuestionRepository
     {

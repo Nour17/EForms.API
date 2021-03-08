@@ -1,6 +1,7 @@
 ﻿using EForms.API.Data.Repositories.Interfaces;
 using EForms.API.Dtos.Section;
 using EForms.API.Models;
+using EForms.API.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,10 +16,13 @@ namespace EForms.API.Controllers
     public class SectionController : ControllerBase
     {
         private readonly IFormRepository _formRepository;
+        private readonly ISectionService _sectionService;
 
-        public SectionController(IFormRepository formRepository)
+        public SectionController(IFormRepository formRepository,
+                                ISectionService sectionService)
         {
             _formRepository = formRepository;
+            _sectionService = sectionService;
         }
 
         [HttpPost("{formId}/section")]
@@ -74,20 +78,20 @@ namespace EForms.API.Controllers
             return Ok(updatedForm);
         }
 
-        [HttpGet("{formId}/{sectionId}")]
+        [HttpGet("{formId}/section/{sectionId}")]
         public async Task<IActionResult> GetSection(string formId, string sectionId)
         {
             Form fetchedForm = await _formRepository.GetForm<Form>(formId);
 
             // Check the form existence in the DB
             if (fetchedForm == null)
-                return NotFound("This form doesn't exist!!");
+                return null;
+
+            var section = _sectionService.GetSectionFromForm(ref fetchedForm, sectionId);
 
             // If found return 200/Section
-            Section fetchedSection = getSectionFromForm(sectionId, fetchedForm.Sections);
-
-            if (fetchedForm != null)
-                return Ok(fetchedSection);
+            if (section != null)
+                return Ok(section);
 
             return NotFound("Section not found!!");
         }
@@ -105,7 +109,7 @@ namespace EForms.API.Controllers
         }
 
         // Simple update for forms, only update Name, Description and Grid Layout.
-        [HttpPut("{formId}/{sectionId}")]
+        [HttpPut("{formId}/section/{sectionId}")]
         public async Task<IActionResult> SimpleUpdateSection(string formId, string sectionId, SectionToUpdateDto sectionToUpdateDto)
         {
             /*
@@ -116,56 +120,26 @@ namespace EForms.API.Controllers
              *      4- Get the OLD section Index from the sections List
              *      5- Remove the OLD section from the List
              *      6- Add the NEW section in the same index of the old one
-             *      7- (ALERT) BUG TO FIX - Copy the unchanged properties from the old form to the newly one
-             *      8- Update the form document
+             *      7- Update the form document
              */
 
-            // Get the form document / object from the DB
-            var fetchedForm = await _formRepository.GetForm<Form>(formId);
+            Form fetchedForm = await _formRepository.GetForm<Form>(formId);
 
             // Check the form existence in the DB
             if (fetchedForm == null)
-                return NotFound("This form doesn't exist!!");
+                return null;
 
-            // STEP 2
-            Section fetchedSection = getSectionFromForm(sectionId, fetchedForm.Sections);
+            Section fetchedSection = _sectionService.GetSectionFromForm(ref fetchedForm, sectionId);
 
-            // STEP 3
-            Section sectionToUpdate = new Section
-            {
-                InternalId = fetchedSection.InternalId,
-                Name = sectionToUpdateDto.Name != null ? sectionToUpdateDto.Name : fetchedSection.Name,
-                Description = sectionToUpdateDto.Description != null ? sectionToUpdateDto.Description : fetchedSection.Description,
-                ColumnRepresentation = sectionToUpdateDto.ColumnRepresentation != 0 ? sectionToUpdateDto.ColumnRepresentation : fetchedSection.ColumnRepresentation,
-                Questions = fetchedSection.Questions
-            };
+            _sectionService.UpdateSection(ref fetchedForm, ref fetchedSection, sectionToUpdateDto);
 
-            // STEP 4
-            var swappedSectionId = fetchedForm.Sections.IndexOf(fetchedSection);
-            // STEP 5
-            fetchedForm.Sections.Remove(fetchedSection);
-            // STEP 6
-            fetchedForm.Sections.Insert(swappedSectionId, sectionToUpdate);
-
-            // BUG SHOULD BE FIXED HERE
-            // The new form should only have the updated properties only
-            Form formToUpdate = new Form
-            {
-                Name = fetchedForm.Name,
-                Description = fetchedForm.Description,
-                ColumnRepresentation = fetchedForm.ColumnRepresentation,
-                Sections = fetchedForm.Sections,
-                Questions = fetchedForm.Questions,
-                FormAnswers = fetchedForm.FormAnswers
-            };
-
-            var updatedForm = await _formRepository.UpdateForm<Form>(formId, formToUpdate);
+            var updatedForm = await _formRepository.UpdateForm<Form>(formId, fetchedForm);
 
             return Ok(updatedForm);
         }
 
 
-        [HttpDelete("{formId}/{sectionId}")]
+        [HttpDelete("{formId}/section/{sectionId}")]
         public async Task<IActionResult> DeleteSection(string formId, string sectionId)
         {
             Form fetchedForm = await _formRepository.GetForm<Form>(formId);
@@ -174,46 +148,19 @@ namespace EForms.API.Controllers
             if (fetchedForm == null)
                 return NotFound("This form doesn't exist!!");
 
-            Section fetchedSection = getSectionFromForm(sectionId, fetchedForm.Sections);
+            Section fetchedSection = _sectionService.GetSectionFromForm(ref fetchedForm, sectionId);
 
             // If found delete the section return 200/Form
             if (fetchedForm != null)
             {
                 fetchedForm.Sections.Remove(fetchedSection);
 
-                // BUG SHOULD BE FIXED HERE
-                // The new form should only have the updated properties only
-                Form formToUpdate = new Form
-                {
-                    Name = fetchedForm.Name,
-                    Description = fetchedForm.Description,
-                    ColumnRepresentation = fetchedForm.ColumnRepresentation,
-                    Sections = fetchedForm.Sections,
-                    Questions = fetchedForm.Questions,
-                    FormAnswers = fetchedForm.FormAnswers
-                };
-
-                var updatedForm = await _formRepository.UpdateForm<Form>(formId, formToUpdate);
+                var updatedForm = await _formRepository.UpdateForm<Form>(formId, fetchedForm);
 
                 return Ok(updatedForm);
             }
 
             return NotFound("Section not found!!");
-        }
-
-        private Section getSectionFromForm(string sectionId, List<Section> formSections)
-        {
-            // Loop over the sections in the fetched form from the DB
-            foreach (Section section in formSections)
-            {
-                // If found return the section object
-                if (section.InternalId == sectionId)
-                {
-                    return section;
-                }
-            }
-
-            return null;
         }
     }
 }

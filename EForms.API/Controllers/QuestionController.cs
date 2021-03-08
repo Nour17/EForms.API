@@ -13,21 +13,20 @@ namespace EForms.API.Controllers
     [ApiController]
     public class QuestionController : ControllerBase
     {
-        private readonly IQuestionRepository questionRepository;
+        private readonly IFormRepository _formRepository;
 
-        public QuestionController(IQuestionRepository questionRepository,
-                                   IFormRepository formRepository)
+        public QuestionController(IFormRepository formRepository)
         {
-            this.questionRepository = questionRepository;
+            _formRepository = formRepository;
         }
 
-        [HttpPost]
-        public void AddQuestion([FromRoute] string formId, QuestionToInsertDto questionToInsertDto)
+        [HttpPost("{formId}/question")]
+        public void AddQuestionIntoForm([FromRoute] string formId, QuestionToInsertDto questionToInsertDto)
         {
             // Get the section or form document to add the question into it
             // The insertion process steps are:
             /*
-             *  1- Get the focused element whether it is a section or a form
+             *  1- Get the form element
              *      a - The element's Id should be sent in the header
              *      b - Retreive the document by Id from the database
              *      c - Check if the document is NOT null
@@ -36,6 +35,7 @@ namespace EForms.API.Controllers
              *  4- Add The Question into the Question collection for further analytics if needed.
              *  5- Return approval with the Question's object if created successfuly or error if not.
              */
+
 
         }
     }
