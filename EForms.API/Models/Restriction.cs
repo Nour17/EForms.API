@@ -2,31 +2,39 @@
 
 namespace EForms.API.Models
 {
+    public enum NumberType
+    {
+        Integer = 1,
+        Float = 2
+    }
+
     public enum RestrictionType
     {
         // Normal Text
-        StringLength = 1,
-        StringContains = 2,
+        MaxStringLength = 1,
+        MinStringLength = 2,
+        StringContains = 3,
+        StringDontContains = 4,
         // Number
-        IsNumber = 3,
-        NumberIsLessThan = 4,
-        NumberIsLessThanOrEqual = 5,
-        NumberIsBiggerThan = 6,
-        NumberIsBiggerThanOrEqual = 7,
-        NumberEqual = 8,
-        NumberDoNotEqual = 9,
-        NumberIsBetween = 10,
-        NumberIsNotBetween = 11,
+        IsNumber = 5,
+        NumberIsLessThan = 6,
+        NumberIsLessThanOrEqual = 7,
+        NumberIsBiggerThan = 8,
+        NumberIsBiggerThanOrEqual = 9,
+        NumberEqual = 10,
+        NumberDoNotEqual = 11,
+        NumberIsBetween = 12,
+        NumberIsNotBetween = 13,
         // Date
-        DateIsAfter = 12,
-        DateEqual = 13,
-        DateIsBefore = 14,
-        DateIsBetween = 15,
-        DateIsNotBetween = 16,
+        DateIsAfter = 14,
+        DateEqual = 15,
+        DateIsBefore = 16,
+        DateIsBetween = 17,
+        DateIsNotBetween = 18,
         // Checkbox
-        AtLeastChecked = 17,
-        ExactlyChecked = 18,
-        AtMostChecked = 19
+        AtLeastChecked = 19,
+        ExactlyChecked = 20,
+        AtMostChecked = 21
     }
 
     public class Restriction

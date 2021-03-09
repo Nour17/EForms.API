@@ -44,6 +44,7 @@ namespace EForms.API
 
             // Services
             services.AddTransient<ISectionService, SectionService>();
+            services.AddTransient<IQuestionService, QuestionService>();
 
             services.AddCors();
         }

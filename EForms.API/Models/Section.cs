@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using EForms.API.Models.Interfaces;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EForms.API.Models
 {
-    public class Section
+    public class Section : IContainerElement
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string InternalId { get; set; } = ObjectId.GenerateNewId().ToString();

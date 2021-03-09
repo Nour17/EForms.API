@@ -9,9 +9,8 @@ namespace EForms.API.Models
 {
     public class Answer
     {
-        [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string InternalId { get; set; }
+        public string InternalId { get; set; } = ObjectId.GenerateNewId().ToString();
         public string Header { get; set; }
         public string UserAnswer { get; set; }
         [BsonDateTimeOptions]

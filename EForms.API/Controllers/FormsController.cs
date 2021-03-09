@@ -43,15 +43,23 @@ namespace EForms.API.Controllers
         {
             var forms = await _formRepository.GetForms<Form>();
 
+            // Check the forms existence in the DB
+            if (forms == null)
+                return NotFound();
+
             return Ok(forms);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetForm(string id)
         {
-            var forms = await _formRepository.GetForm<Form>(id);
+            var form = await _formRepository.GetForm<Form>(id);
 
-            return Ok(forms);
+            // Check the form existence in the DB
+            if (form == null)
+                return NotFound("This form doesn't exist!!");
+
+            return Ok(form);
         }
 
         // Simple update for forms, only update Name, Description and Grid Layout.

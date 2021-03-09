@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using EForms.API.Models.Interfaces;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EForms.API.Models
 {
-    public class Form
+    public class Form : IContainerElement
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
