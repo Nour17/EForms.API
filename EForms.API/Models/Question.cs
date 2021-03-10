@@ -40,7 +40,7 @@ namespace EForms.API.Models
         public QuestionType Type { get; set; }
         public Restriction Restriction { get; set; }
         // UserId: One Answer
-        public List<Dictionary<String, Answer>> QuestionAnswers { get; set; }
+        public List<QuestionAnswer> QuestionAnswers { get; set; }
         [BsonDateTimeOptions]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [BsonDateTimeOptions]

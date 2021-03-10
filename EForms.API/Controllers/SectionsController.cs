@@ -13,12 +13,12 @@ namespace EForms.API.Controllers
 {
     [Route("api/")]
     [ApiController]
-    public class SectionController : ControllerBase
+    public class SectionsController : ControllerBase
     {
         private readonly IFormRepository _formRepository;
         private readonly ISectionService _sectionService;
 
-        public SectionController(IFormRepository formRepository,
+        public SectionsController(IFormRepository formRepository,
                                 ISectionService sectionService)
         {
             _formRepository = formRepository;

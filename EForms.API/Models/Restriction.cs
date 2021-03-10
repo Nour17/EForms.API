@@ -5,7 +5,7 @@ namespace EForms.API.Models
     public enum NumberType
     {
         Integer = 1,
-        Float = 2
+        Double = 2
     }
 
     public enum RestrictionType

@@ -8,18 +8,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using EForms.API.Models;
 using EForms.API.Services.Interfaces;
+using EForms.API.Dtos.Restriction;
 
 namespace EForms.API.Controllers
 {
     [Route("api/")]
     [ApiController]
-    public class QuestionController : ControllerBase
+    public class QuestionsController : ControllerBase
     {
         private readonly IFormRepository _formRepository;
         private readonly ISectionService _sectionService;
         private readonly IQuestionService _questionService;
 
-        public QuestionController(IFormRepository formRepository,
+        public QuestionsController(IFormRepository formRepository,
                                   ISectionService sectionService,
                                   IQuestionService questionService)
         {
@@ -77,17 +78,83 @@ namespace EForms.API.Controllers
              if (fetchedForm == null)
                  return NotFound("This form doesn't exist!!");
 
+             var question = new Question();
+
              if (questionToAnswerDto.SectionId == null)
              {
-                var question = _questionService.GetQuestion<Form>(ref fetchedForm, questionToAnswerDto.QuestionId);
-                return Ok(question);
+                question = _questionService.GetQuestion<Form>(ref fetchedForm, questionToAnswerDto.QuestionId);
              }
              else
              {
                 var section = _sectionService.GetSectionFromForm(ref fetchedForm, questionToAnswerDto.SectionId);
-                var question = _questionService.GetQuestion<Section>(ref section, questionToAnswerDto.QuestionId);
-                return Ok(question);
+                question = _questionService.GetQuestion<Section>(ref section, questionToAnswerDto.QuestionId);
              }
-         }
+
+            bool isAcceptableAnwser = false;
+
+             if (question.Restriction != null)
+                   isAcceptableAnwser = _questionService.CheckAnswer(question, questionToAnswerDto.Answer);
+
+            Answer answer = new Answer
+            {
+                Header = question.Header,
+                UserAnswer = questionToAnswerDto.Answer
+            };
+
+            question.QuestionAnswers = updatedQuestionAnswers(questionToAnswerDto.UserId, answer, question);
+
+            // Update Form
+
+            // fetchedForm = updatedFormAnswers(questionToAnswerDto.UserId, answer, fetchedForm, question);
+
+            var updatedForm = await _formRepository.UpdateForm<Form>(formId, fetchedForm);
+
+            return Ok(updatedForm);
+        }
+
+        private List<QuestionAnswer> updatedQuestionAnswers(string userId, Answer answer, Question question)
+        {
+            QuestionAnswer questionAnswer = new QuestionAnswer
+            {
+                UserId = userId,
+                Answer = answer
+            };
+
+            var existedAnswersInQuestion = new List<QuestionAnswer>();
+
+            if (question.QuestionAnswers != null)
+                existedAnswersInQuestion = question.QuestionAnswers;
+
+            existedAnswersInQuestion.Add(questionAnswer);
+
+            return existedAnswersInQuestion;
+        }
+
+        private Form updatedFormAnswers(string userId, Answer answer, Form form, Question question)
+        {
+            var usersAnswers = form.FormAnswers.FirstOrDefault(x => x.UserId == userId);
+            var oldFormId = form.FormAnswers.FindIndex(x => x.UserId == userId);
+
+            if (usersAnswers == null)
+            {
+                var existedAnswersInUserFormAnswers = new List<Answer>();
+                existedAnswersInUserFormAnswers.Add(answer);
+                usersAnswers = new FormAnswer
+                {
+                    UserId = userId,
+                    Answers = existedAnswersInUserFormAnswers
+                };
+            }
+            else
+            {
+                usersAnswers.Answers.Add(answer);
+            }
+
+
+            form.FormAnswers.RemoveAt(oldFormId);
+            form.FormAnswers.Insert(oldFormId, usersAnswers);
+
+            return form;
+        }
     }
 }

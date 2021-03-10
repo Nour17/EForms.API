@@ -11,5 +11,7 @@ namespace EForms.API.Services.Interfaces
     {
         void InsertQuestion<T>(ref T parentElement, QuestionToInsertDto questionToInsertDto);
         Question GetQuestion<T>(ref T parentElement, string questionId);
+        bool CheckAnswer(Question question, string userAnswer);
+
     }
 }

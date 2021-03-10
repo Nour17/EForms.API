@@ -20,7 +20,7 @@ namespace EForms.API.Models
         public List<Section> Sections { get; set; }
         public List<Question> Questions { get; set; }
         // UserId: Array of Answers
-        public List<Dictionary<String, List<Answer>>> FormAnswers { get; set; }
+        public List<FormAnswer> FormAnswers { get; set; }
         [BsonDateTimeOptions]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [BsonDateTimeOptions]
