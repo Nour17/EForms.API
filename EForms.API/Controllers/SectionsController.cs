@@ -46,34 +46,18 @@ namespace EForms.API.Controllers
             var existedSections = new List<Section>();
 
             // Check whether the fethed form have any previous section or not
-            try
-            {
-                /*
-                 * If any sections were already in the fetched form
-                 * a copy should be done to add to it the newly section
-                 */
-                if (fetchedForm.Sections != null)
-                    existedSections = fetchedForm.Sections;
+            /*
+             * If any sections were already in the fetched form
+             * a copy should be done to add to it the newly section
+            */
+            if (fetchedForm.Sections != null)
+                existedSections = fetchedForm.Sections;
 
-                existedSections.Add(sectionToCreate);
-            } catch (ArgumentNullException e)
-            {
-                return BadRequest("Section cannot be added!" + e);
-            }
+            existedSections.Add(sectionToCreate);
 
-            // BUG SHOULD BE FIXED HERE
-            // The new form should only have the updated properties only
-            Form formToUpdate = new Form
-            {
-                Name = fetchedForm.Name,
-                Description = fetchedForm.Description,
-                ColumnRepresentation = fetchedForm.ColumnRepresentation,
-                Sections = existedSections,
-                Questions = fetchedForm.Questions,
-                FormAnswers = fetchedForm.FormAnswers
-            };
+            fetchedForm.Sections = existedSections;
 
-            var updatedForm = await _formRepository.UpdateForm<Form>(formId, formToUpdate);
+            var updatedForm = await _formRepository.UpdateForm<Form>(formId, fetchedForm);
 
             return Ok(updatedForm);
         }
@@ -127,10 +111,15 @@ namespace EForms.API.Controllers
 
             // Check the form existence in the DB
             if (fetchedForm == null)
-                return null;
+                return NotFound("This Form doesnt exist!!");
 
             Section fetchedSection = _sectionService.GetSectionFromForm(ref fetchedForm, sectionId);
 
+            // Check the section existence in the fetched form
+            if (fetchedSection == null)
+                return NotFound("This Section doesnt exist!!");
+
+            // SHOULD DO: Check if the section is not updated
             _sectionService.UpdateSection(ref fetchedForm, ref fetchedSection, sectionToUpdateDto);
 
             var updatedForm = await _formRepository.UpdateForm<Form>(formId, fetchedForm);
