@@ -1,6 +1,6 @@
-﻿using EForms.API.Dtos.Form;
-using EForms.API.Models;
-using EForms.API.Data.Repositories.Interfaces;
+﻿using EForms.API.Core.Dtos.Form;
+using EForms.API.Repository.Data.Repositories.Interfaces;
+using EForms.API.Infrastructure.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;

@@ -1,14 +1,13 @@
-﻿using EForms.API.Dtos.Question;
-using EForms.API.Data.Repositories.Interfaces;
+﻿using EForms.API.Core.Dtos.Question;
+using EForms.API.Core.Services.Interfaces;
+using EForms.API.Infrastructure.Models;
+using EForms.API.Repository.Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EForms.API.Models;
-using EForms.API.Services.Interfaces;
-using EForms.API.Dtos.Restriction;
 
 namespace EForms.API.Controllers
 {

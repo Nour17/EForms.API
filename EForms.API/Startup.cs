@@ -1,6 +1,8 @@
-using EForms.API.Helpers;
-using EForms.API.Data.Repositories;
-using EForms.API.Data.Repositories.Interfaces;
+using EForms.API.Core.Services;
+using EForms.API.Core.Services.Interfaces;
+using EForms.API.Repository.Data.Repositories;
+using EForms.API.Repository.Data.Repositories.Interfaces;
+using EForms.API.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,8 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EForms.API.Services;
-using EForms.API.Services.Interfaces;
+
 
 namespace EForms.API
 {
