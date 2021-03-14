@@ -6,16 +6,19 @@ namespace EForms.API.Core.Services.RestrictionsService.Restrictions
     {
         public override bool checkRestriction(string userAnswer, string rightOperand)
         {
-            int maxLengthToInt;
-            // Convert maxlength value from string to int and copy the value to maxLengthToInt variable
-            bool stringToIntConversion = StringToIntConverstion(rightOperand, out maxLengthToInt);
+            int rightOperandToInt = StringToIntConverstion(rightOperand);
 
-            // Check if maxLengthToInt is not 0 and the conversion is done successfuly
-            if (maxLengthToInt != 0 && stringToIntConversion)
+            // Check if rightOperandToInt is not 0 as it is an indicator that the conversion is done successfuly
+            if (rightOperandToInt != 0)
                 // Check if the restriction is fullfilled 
-                if (userAnswer.Length < maxLengthToInt)
+                if (userAnswer.Length < rightOperandToInt)
                     return true;
 
+            return false;
+        }
+
+        public override bool checkRestriction(string userAnswer, string rightOperand, string extraOperand)
+        {
             return false;
         }
     }

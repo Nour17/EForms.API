@@ -11,15 +11,19 @@ namespace EForms.API.Core.Services.RestrictionsService.Restrictions
 
             if (numType == NumberType.Integer)
             {
-                var valueHolder = 0;
+                int valueHolder;
                 return int.TryParse(userAnswer, out valueHolder);
             }
             else if (numType == NumberType.Double)
             {
-                var valueHolder = 0.0;
+                double valueHolder;
                 return double.TryParse(userAnswer, out valueHolder);
             }
 
+            return false;
+        }
+        public override bool checkRestriction(string userAnswer, string rightOperand, string extraOperand)
+        {
             return false;
         }
     }

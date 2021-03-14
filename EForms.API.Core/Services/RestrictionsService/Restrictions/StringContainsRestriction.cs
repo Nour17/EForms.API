@@ -10,5 +10,10 @@ namespace EForms.API.Core.Services.RestrictionsService.Restrictions
                 return true;
             return false;
         }
+
+        public override bool checkRestriction(string userAnswer, string rightOperand, string extraOperand)
+        {
+            return false;
+        }
     }
 }

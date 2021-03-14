@@ -1,6 +1,6 @@
 ﻿namespace EForms.API.Core.Dtos.Form
 {
-    public class FormToInsertDto
+    public class SimpleFormToInsertDto
     {
         public string Name { get; set; }
         public string Description { get; set; }

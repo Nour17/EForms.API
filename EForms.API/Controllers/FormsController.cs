@@ -1,13 +1,12 @@
 ﻿using EForms.API.Core.Dtos.Form;
 using EForms.API.Repository.Data.Repositories.Interfaces;
 using EForms.API.Infrastructure.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using EForms.API.Core.Dtos.Question;
+using EForms.API.Core.Services.Interfaces;
+using EForms.API.Core.Dtos.Section;
+using System.Collections.Generic;
 
 namespace EForms.API.Controllers
 {
@@ -16,14 +15,68 @@ namespace EForms.API.Controllers
     public class FormsController : ControllerBase
     {
         private readonly IFormRepository _formRepository;
+        private readonly IQuestionService _questionService;
 
-        public FormsController(IFormRepository formRepository)
+        public FormsController(IFormRepository formRepository,
+                                IQuestionService questionService)
         {
             _formRepository = formRepository;
+            _questionService = questionService;
+        }
+
+        [HttpPost("submit")]
+        public async Task<IActionResult> CreateFullForm(FullFormToInsertDto formToInsertDto)
+        {
+            // Create new Form object with the incoming properties from the request payload
+            Form formToCreate = new Form
+            {
+                Name = formToInsertDto.Name,
+                Description = formToInsertDto.Description,
+                ColumnRepresentation = formToInsertDto.ColumnRepresentation
+            };
+
+            // Loop through the Questions in the incoming request
+            foreach(QuestionToInsertDto questionToInsertDto in formToInsertDto.Questions)
+            {
+                // Add each question individualy into the form
+                _questionService.InsertQuestion<Form>(ref formToCreate, questionToInsertDto);
+            }
+
+            // List of sections to hold the newly created sections from the request
+            var sectionsToBeAdded = new List<Section>();
+
+            // Loop through the Sections in the incoming request
+            foreach (FullSectionToInsertDto sectionToInsertDto in formToInsertDto.Sections)
+            {
+                // Create new Section object with the incoming properties from the request payload
+                Section sectionToCreate = new Section
+                {
+                    Name = sectionToInsertDto.Name,
+                    Description = sectionToInsertDto.Description,
+                    ColumnRepresentation = sectionToInsertDto.ColumnRepresentation
+                };
+
+                // Loop through the Questions in each section in the incoming request
+                foreach (QuestionToInsertDto questionToInsertDto in sectionToInsertDto.Questions)
+                {
+                    _questionService.InsertQuestion<Section>(ref sectionToCreate, questionToInsertDto);
+                }
+
+                // Add the newly created section to the sectionsToBeAdded list
+                sectionsToBeAdded.Add(sectionToCreate);
+            }
+
+            // Copy the sectionsToBeAdded list to the newly created form
+            formToCreate.Sections = sectionsToBeAdded;
+
+            // Add the form to the DB
+            var createdForm = await _formRepository.AddForm<Form>(formToCreate);
+
+            return Ok(createdForm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateForm(FormToInsertDto formToInsertDto)
+        public async Task<IActionResult> CreateSimpleForm(SimpleFormToInsertDto formToInsertDto)
         {
             // Create new Form object with the incoming properties from the request payload
             Form formToCreate = new Form
@@ -64,7 +117,7 @@ namespace EForms.API.Controllers
 
         // Simple update for forms, only update Name, Description and Grid Layout.
         [HttpPut("{id}")]
-        public async Task<IActionResult> SimpleUpdateForm(string id, FormToUpdateDto formToUpdateDto)
+        public async Task<IActionResult> UpdateSimpleForm(string id, FormToUpdateDto formToUpdateDto)
         {
             // Get the form document / object from the DB
             var fetchedForm = await _formRepository.GetForm<Form>(id);
@@ -73,19 +126,17 @@ namespace EForms.API.Controllers
             if (fetchedForm == null)
                 return NotFound("This form doesn't exist!!");
 
-            // BUG SHOULD BE FIXED HERE
-            // The new form should only have the updated properties only
-            Form formToUpdate = new Form
-            {
-                Name = formToUpdateDto.Name != null ? formToUpdateDto.Name : fetchedForm.Name,
-                Description = formToUpdateDto.Description != null ? formToUpdateDto.Description : fetchedForm.Description,
-                ColumnRepresentation = formToUpdateDto.ColumnRepresentation != 0 ? formToUpdateDto.ColumnRepresentation : fetchedForm.ColumnRepresentation,
-                Sections = fetchedForm.Sections,
-                Questions = fetchedForm.Questions,
-                FormAnswers = fetchedForm.FormAnswers
-            };
+            // Check each value if sent or not and then proceed with the replacement.
+            if (formToUpdateDto.Name != null)
+                fetchedForm.Name = formToUpdateDto.Name;
 
-            var updatedForm = await _formRepository.UpdateForm<Form>(id, formToUpdate);
+            if (formToUpdateDto.Description != null)
+                fetchedForm.Description = formToUpdateDto.Description;
+
+            if (formToUpdateDto.ColumnRepresentation != 0)
+                fetchedForm.ColumnRepresentation = formToUpdateDto.ColumnRepresentation;
+
+            var updatedForm = await _formRepository.UpdateForm<Form>(id, fetchedForm);
 
             return Ok(updatedForm);
         }

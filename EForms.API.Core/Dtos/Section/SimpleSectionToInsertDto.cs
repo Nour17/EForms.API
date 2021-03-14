@@ -1,6 +1,6 @@
 ﻿namespace EForms.API.Core.Dtos.Section
 {
-    public class SectionToInsertDto
+    public class SimpleSectionToInsertDto
     {
         public string Name { get; set; }
         public string Description { get; set; }

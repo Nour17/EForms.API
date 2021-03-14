@@ -26,7 +26,7 @@ namespace EForms.API.Controllers
         }
 
         [HttpPost("{formId}/section")]
-        public async Task<IActionResult> CreateSection(string formId, [FromBody] SectionToInsertDto sectionToInsertDto)
+        public async Task<IActionResult> CreateSimpleSection(string formId, [FromBody] SimpleSectionToInsertDto sectionToInsertDto)
         {
             Form fetchedForm = await _formRepository.GetForm<Form>(formId);
 
@@ -89,6 +89,10 @@ namespace EForms.API.Controllers
             if (fetchedForm == null)
                 return NotFound("This form doesn't exist!!");
 
+            // If not found return 404
+            if (fetchedForm.Sections == null)
+                return NotFound("Sections not found!!");
+
             return Ok(fetchedForm.Sections);
         }
 
@@ -99,11 +103,8 @@ namespace EForms.API.Controllers
             /*
              *  Simple Section Update Logic:
              *      1- Get the form (parent) document from DB
-             *      2- Using foreach loop fetch the intended section to be swapped
-             *      3- (ALERT) BUG TO FIX - Copy the unchanged properties from the OLD section to the NEW one
-             *      4- Get the OLD section Index from the sections List
-             *      5- Remove the OLD section from the List
-             *      6- Add the NEW section in the same index of the old one
+             *      2- Get the intended section to be swapped
+             *      3- Update the fetched section
              *      7- Update the form document
              */
 
@@ -119,8 +120,7 @@ namespace EForms.API.Controllers
             if (fetchedSection == null)
                 return NotFound("This Section doesnt exist!!");
 
-            // SHOULD DO: Check if the section is not updated
-            _sectionService.UpdateSection(ref fetchedForm, ref fetchedSection, sectionToUpdateDto);
+           _sectionService.UpdateSimpleSection(ref fetchedSection, sectionToUpdateDto);
 
             var updatedForm = await _formRepository.UpdateForm<Form>(formId, fetchedForm);
 

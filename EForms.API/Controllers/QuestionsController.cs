@@ -29,7 +29,7 @@ namespace EForms.API.Controllers
         }
 
         [HttpPost("form/{formId}/question")]
-        public async Task<IActionResult> AddQuestionTest([FromRoute] string formId, QuestionToInsertDto questionToInsertDto)
+        public async Task<IActionResult> AddQuestion([FromRoute] string formId, QuestionToInsertDto questionToInsertDto)
         {
             // The insertion process steps are:
             /*
@@ -57,9 +57,9 @@ namespace EForms.API.Controllers
             }
             else
             {
-                var section = _sectionService.GetSectionFromForm(ref fetchedForm, questionToInsertDto.SectionId);
+                var fetchedSection = _sectionService.GetSectionFromForm(ref fetchedForm, questionToInsertDto.SectionId);
 
-                _questionService.InsertQuestion<Section>(ref section, questionToInsertDto);
+                _questionService.InsertQuestion<Section>(ref fetchedSection, questionToInsertDto);
             }
 
 
