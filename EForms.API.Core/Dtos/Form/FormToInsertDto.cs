@@ -1,18 +1,24 @@
-﻿using EForms.API.Core.Dtos.Question;
+﻿using EForms.API.Core.Dtos.Container;
+using EForms.API.Core.Dtos.Question;
 using EForms.API.Core.Dtos.Section;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace EForms.API.Core.Dtos.Form
 {
-    public class FullFormToInsertDto
+    public class FormToInsertDto : IContainerToCreateDto
     {
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Description { get; set; }
+        [Required]
         public int ColumnRepresentation { get; set; }
+        [Required]
         public string UserId { get; set; }
-        public List<FullSectionToInsertDto> Sections { get; set; }
+        public List<SectionToInsertDto> Sections { get; set; }
         public List<QuestionToInsertDto> Questions { get; set; }
     }
 }

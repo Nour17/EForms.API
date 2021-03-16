@@ -2,7 +2,7 @@
 
 namespace EForms.API.Core.Services.RestrictionsService.Restrictions
 {
-    public class CheckboxAtLeastCheckRestriction : RestrictionService
+    public class CheckboxAtLeastCheckRestriction : ValidationService
     {
         public override bool checkRestriction(string userAnswer, string rightOperand)
         {

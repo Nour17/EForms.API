@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace EForms.API.Core.Services.RestrictionsService.Restrictions
 {
-    public class StringContainsRestriction : ValidationService
+    public class StringDontContainsRestriction : ValidationService
     {
         public override bool checkRestriction(string userAnswer, string rightOperand)
         {
-            if (userAnswer.Contains(rightOperand))
+            if (!userAnswer.Contains(rightOperand))
                 return true;
             return false;
         }

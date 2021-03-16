@@ -1,6 +1,10 @@
-﻿namespace EForms.API.Core.Dtos.Section
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace EForms.API.Core.Dtos.Container
 {
-    public class SimpleSectionToInsertDto
+    public interface IContainerToUpdateDto
     {
         public string Name { get; set; }
         public string Description { get; set; }

@@ -47,12 +47,12 @@ namespace EForms.API.Controllers
 
             if (restrictionToAddDto.SectionId == null)
             {
-                question = _questionService.GetQuestion<Form>(ref fetchedForm, restrictionToAddDto.QuestionId);
+                question = _questionService.GetQuestion<Form>(fetchedForm, restrictionToAddDto.QuestionId);
             }
             else
             {
                 var section = _sectionService.GetSectionFromForm(ref fetchedForm, restrictionToAddDto.SectionId);
-                question = _questionService.GetQuestion<Section>(ref section, restrictionToAddDto.QuestionId);
+                question = _questionService.GetQuestion<Section>(section, restrictionToAddDto.QuestionId);
             }
 
             question.Restriction = restrictionToInsert;

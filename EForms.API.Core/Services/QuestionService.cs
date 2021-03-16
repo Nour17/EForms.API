@@ -4,17 +4,38 @@ using EForms.API.Core.Services.Interfaces;
 using System.Collections.Generic;
 using EForms.API.Core.Services.RestrictionsServices.Factory;
 using EForms.API.Core.Dtos.Question;
+using System.Linq;
 
 namespace EForms.API.Core.Services
 {
     public class QuestionService : IQuestionService
     {
-        public Question GetQuestion<T>(ref T parentElement, string questionId)
+        public Question GetQuestion(Form form, string questionId)
+        {
+            var question = new Question();
+
+            question = GetQuestion<Form>(form, questionId);
+
+            if (question != null)
+                return question;
+
+            foreach (Section section in form.Sections)
+            {
+                question = GetQuestion<Section>(section, questionId);
+
+                if (question != null)
+                    return question;
+            }
+
+            return null;
+        }
+
+        public Question GetQuestion<T>(T parentElement, string questionId)
         {
             // Create IContainerElement object whether it is form or section to access the Questions property
             IContainerElement containerElement = (IContainerElement)parentElement;
 
-            return containerElement.Questions.Find(x => x.InternalId == questionId);
+            return containerElement.Questions.FirstOrDefault(x => x.InternalId == questionId);
         }
 
         public void InsertQuestion<T>(ref T parentElement, QuestionToInsertDto questionToInsertDto)

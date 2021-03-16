@@ -2,7 +2,7 @@
 
 namespace EForms.API.Core.Services.RestrictionsService.Restrictions
 {
-    public class DateBeforeRestriction : RestrictionService
+    public class DateBeforeRestriction : ValidationService
     {
         public override bool checkRestriction(string userAnswer, string rightOperand)
         {

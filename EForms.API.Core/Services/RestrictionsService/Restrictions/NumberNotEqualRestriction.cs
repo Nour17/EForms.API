@@ -2,7 +2,7 @@
 
 namespace EForms.API.Core.Services.RestrictionsService.Restrictions
 {
-    public class NumberNotEqualRestriction : RestrictionService
+    public class NumberNotEqualRestriction : ValidationService
     {
         public override bool checkRestriction(string userAnswer, string rightOperand)
         {

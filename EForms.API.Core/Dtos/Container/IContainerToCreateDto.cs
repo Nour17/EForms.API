@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace EForms.API.Core.Dtos.Section
+namespace EForms.API.Core.Dtos.Container
 {
-    public class FullSectionToInsertDto
+    public interface IContainerToCreateDto
     {
         public string Name { get; set; }
         public string Description { get; set; }

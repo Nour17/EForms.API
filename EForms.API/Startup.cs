@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.OpenApi.Models;
 
 namespace EForms.API
 {
@@ -44,10 +44,17 @@ namespace EForms.API
             services.AddTransient<IQuestionRepository, QuestionRepository>();
 
             // Services
+            services.AddTransient<IContainerService, ContainerService>();
+            services.AddTransient<IFormService, FormService>();
             services.AddTransient<ISectionService, SectionService>();
             services.AddTransient<IQuestionService, QuestionService>();
 
             services.AddCors();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EForms API", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,6 +66,12 @@ namespace EForms.API
             }
 
             //app.UseHttpsRedirection();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "EForms API V1");
+            });
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 

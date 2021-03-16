@@ -2,7 +2,7 @@
 
 namespace EForms.API.Core.Services.RestrictionsService.Restrictions
 {
-    public class MaxStringLengthRestriction : RestrictionService
+    public class MaxStringLengthRestriction : ValidationService
     {
         public override bool checkRestriction(string userAnswer, string rightOperand)
         {

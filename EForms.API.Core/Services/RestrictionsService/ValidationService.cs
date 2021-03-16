@@ -4,8 +4,9 @@ using System.Globalization;
 
 namespace EForms.API.Core.Services.RestrictionsService
 {
-    public abstract class RestrictionService
+    public abstract class ValidationService
     {
+        //public abstract bool checkRestriction(string userAnswer);
         public abstract bool checkRestriction(string userAnswer, string rightOperand);
         public abstract bool checkRestriction(string userAnswer, string rightOperand, string extraOperand);
         public static int StringToIntConverstion(string operand)
@@ -19,7 +20,6 @@ namespace EForms.API.Core.Services.RestrictionsService
 
             return convertedValue;
         }
-
         public static DateTime? StringToDateConverstion(string operand)
         {
             DateTime convertedValue;

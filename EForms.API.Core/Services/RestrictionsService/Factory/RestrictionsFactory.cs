@@ -6,7 +6,36 @@ namespace EForms.API.Core.Services.RestrictionsServices.Factory
 {
     public static class RestrictionsFactory
     {
-        public static RestrictionService CreateRestriction(Restriction restriction)
+        public static bool ApplyRestriction(Restriction restriction, 
+                                            string userAnswer, 
+                                            string rightOperand, 
+                                            string extraOperand = null)
+        {
+            // Create new instance based on the restriction type
+            var restrictionChecker = CreateRestriction(restriction);
+
+            if (restrictionChecker == null)
+            {
+                return false;
+            }
+
+            // Check if the restriction type have extraOperand
+            if (restriction.HaveExtraOperand())
+            {
+                // If yes validate the extraOperand sent
+                if (string.IsNullOrWhiteSpace(extraOperand))
+                    return false;
+                // Call the checkRestriction with three parameters which include the extra operand logic
+                return restrictionChecker.checkRestriction(userAnswer, rightOperand, extraOperand);
+            }
+            else
+            {
+                // If no Call the checkRestriction with two parameters which exclude the extra operand logic
+                return restrictionChecker.checkRestriction(userAnswer, rightOperand);
+            }
+        }
+
+        public static ValidationService CreateRestriction(Restriction restriction)
         {
             switch (restriction.Condition)
             {
@@ -18,7 +47,7 @@ namespace EForms.API.Core.Services.RestrictionsServices.Factory
                 case RestrictionType.StringContains:
                     return new StringContainsRestriction();
                 case RestrictionType.StringDontContains:
-                    return new StringContainsRestriction();
+                    return new StringDontContainsRestriction();
                 // Number Restriction Check
                 // I rather remove this condition
                 case RestrictionType.IsNumber:
@@ -58,7 +87,6 @@ namespace EForms.API.Core.Services.RestrictionsServices.Factory
                 case RestrictionType.AtMostChecked:
                     return new CheckboxExactlyCheckRestriction();
             }
-
             return null;
         }
     }

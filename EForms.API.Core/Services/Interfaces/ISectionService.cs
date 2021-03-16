@@ -10,6 +10,6 @@ namespace EForms.API.Core.Services.Interfaces
     public interface ISectionService
     {
         Section GetSectionFromForm(ref Form form, string sectionId);
-        void UpdateSimpleSection(ref Section oldSection, SectionToUpdateDto newSection);
+        void AddSectionToForm(ref Form form, Section section);
     }
 }

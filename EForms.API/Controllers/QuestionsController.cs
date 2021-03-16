@@ -68,7 +68,7 @@ namespace EForms.API.Controllers
             return Ok(updatedForm);
         }
 
-        [HttpPost("form/{formId}/answer")]
+        [HttpPost("form/{formId}/questionanswer")]
          public async Task<IActionResult> AnswerQuestion([FromRoute] string formId, QuestionToAnswerDto questionToAnswerDto)
          {
              var fetchedForm = await _formRepository.GetForm<Form>(formId);
@@ -81,12 +81,12 @@ namespace EForms.API.Controllers
 
              if (questionToAnswerDto.SectionId == null)
              {
-                question = _questionService.GetQuestion<Form>(ref fetchedForm, questionToAnswerDto.QuestionId);
+                question = _questionService.GetQuestion<Form>(fetchedForm, questionToAnswerDto.QuestionId);
              }
              else
              {
                 var section = _sectionService.GetSectionFromForm(ref fetchedForm, questionToAnswerDto.SectionId);
-                question = _questionService.GetQuestion<Section>(ref section, questionToAnswerDto.QuestionId);
+                question = _questionService.GetQuestion<Section>(section, questionToAnswerDto.QuestionId);
              }
 
             bool isAcceptableAnwser = false;
@@ -101,10 +101,6 @@ namespace EForms.API.Controllers
             };
 
             question.QuestionAnswers = updatedQuestionAnswers(questionToAnswerDto.UserId, answer, question);
-
-            // Update Form
-
-            // fetchedForm = updatedFormAnswers(questionToAnswerDto.UserId, answer, fetchedForm, question);
 
             var updatedForm = await _formRepository.UpdateForm<Form>(formId, fetchedForm);
 

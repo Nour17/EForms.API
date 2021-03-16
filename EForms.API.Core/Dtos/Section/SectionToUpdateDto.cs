@@ -1,6 +1,8 @@
-﻿namespace EForms.API.Core.Dtos.Section
+﻿using EForms.API.Core.Dtos.Container;
+
+namespace EForms.API.Core.Dtos.Section
 {
-    public class SectionToUpdateDto
+    public class SectionToUpdateDto : IContainerToUpdateDto
     {
         public string Name { get; set; }
         public string Description { get; set; }

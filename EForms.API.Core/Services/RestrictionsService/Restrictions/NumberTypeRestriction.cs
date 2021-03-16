@@ -3,7 +3,7 @@ using System;
 
 namespace EForms.API.Core.Services.RestrictionsService.Restrictions
 {
-    public class NumberTypeRestriction : RestrictionService
+    public class NumberTypeRestriction : ValidationService
     {
         public override bool checkRestriction(string userAnswer, string rightOperand)
         {

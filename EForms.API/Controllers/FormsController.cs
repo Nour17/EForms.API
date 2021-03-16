@@ -3,10 +3,11 @@ using EForms.API.Repository.Data.Repositories.Interfaces;
 using EForms.API.Infrastructure.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using EForms.API.Core.Dtos.Question;
 using EForms.API.Core.Services.Interfaces;
 using EForms.API.Core.Dtos.Section;
 using System.Collections.Generic;
+using EForms.API.Core.Dtos.Container;
+using EForms.API.Core.Dtos.Answer;
 
 namespace EForms.API.Controllers
 {
@@ -14,53 +15,40 @@ namespace EForms.API.Controllers
     [ApiController]
     public class FormsController : ControllerBase
     {
+        private readonly IContainerService _containerService;
+        private readonly IFormService _formService;
         private readonly IFormRepository _formRepository;
-        private readonly IQuestionService _questionService;
 
-        public FormsController(IFormRepository formRepository,
-                                IQuestionService questionService)
+        public FormsController(IContainerService containerService,
+                                IFormService formService,
+                                IFormRepository formRepository)
         {
+            _containerService = containerService;
+            _formService = formService;
             _formRepository = formRepository;
-            _questionService = questionService;
         }
 
         [HttpPost("submit")]
-        public async Task<IActionResult> CreateFullForm(FullFormToInsertDto formToInsertDto)
+        public async Task<IActionResult> CreateFullForm(FormToInsertDto formToInsertDto)
         {
-            // Create new Form object with the incoming properties from the request payload
-            Form formToCreate = new Form
+            if (formToInsertDto.Questions.Count == 0 || formToInsertDto.Questions == null)
             {
-                Name = formToInsertDto.Name,
-                Description = formToInsertDto.Description,
-                ColumnRepresentation = formToInsertDto.ColumnRepresentation
-            };
-
-            // Loop through the Questions in the incoming request
-            foreach(QuestionToInsertDto questionToInsertDto in formToInsertDto.Questions)
-            {
-                // Add each question individualy into the form
-                _questionService.InsertQuestion<Form>(ref formToCreate, questionToInsertDto);
+                return BadRequest("Form must atleast have one question!!");
             }
+
+            Form formToCreate = (Form)_containerService.PopulateContainer<Form>(formToInsertDto);
+
+            _containerService.AddListOfQuestions<Form>(ref formToCreate, formToInsertDto.Questions);
 
             // List of sections to hold the newly created sections from the request
             var sectionsToBeAdded = new List<Section>();
 
             // Loop through the Sections in the incoming request
-            foreach (FullSectionToInsertDto sectionToInsertDto in formToInsertDto.Sections)
+            foreach (SectionToInsertDto sectionToInsertDto in formToInsertDto.Sections)
             {
-                // Create new Section object with the incoming properties from the request payload
-                Section sectionToCreate = new Section
-                {
-                    Name = sectionToInsertDto.Name,
-                    Description = sectionToInsertDto.Description,
-                    ColumnRepresentation = sectionToInsertDto.ColumnRepresentation
-                };
+                Section sectionToCreate = (Section)_containerService.PopulateContainer<Section>(sectionToInsertDto);
 
-                // Loop through the Questions in each section in the incoming request
-                foreach (QuestionToInsertDto questionToInsertDto in sectionToInsertDto.Questions)
-                {
-                    _questionService.InsertQuestion<Section>(ref sectionToCreate, questionToInsertDto);
-                }
+                _containerService.AddListOfQuestions<Section>(ref sectionToCreate, sectionToInsertDto.Questions);
 
                 // Add the newly created section to the sectionsToBeAdded list
                 sectionsToBeAdded.Add(sectionToCreate);
@@ -76,15 +64,9 @@ namespace EForms.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSimpleForm(SimpleFormToInsertDto formToInsertDto)
+        public async Task<IActionResult> CreateSimpleForm(IContainerToCreateDto containerToInsertDto)
         {
-            // Create new Form object with the incoming properties from the request payload
-            Form formToCreate = new Form
-            {
-                Name = formToInsertDto.Name,
-                Description = formToInsertDto.Description,
-                ColumnRepresentation = formToInsertDto.ColumnRepresentation
-            };
+            Form formToCreate = (Form) _containerService.PopulateContainer<Form>(containerToInsertDto);
 
             var createdForm = await _formRepository.AddForm<Form>(formToCreate);
 
@@ -92,7 +74,7 @@ namespace EForms.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ListAllForms()
+        public async Task<IActionResult> ListForms()
         {
             var forms = await _formRepository.GetForms<Form>();
 
@@ -117,7 +99,7 @@ namespace EForms.API.Controllers
 
         // Simple update for forms, only update Name, Description and Grid Layout.
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSimpleForm(string id, FormToUpdateDto formToUpdateDto)
+        public async Task<IActionResult> UpdateForm(string id, FormToUpdateDto formToUpdateDto)
         {
             // Get the form document / object from the DB
             var fetchedForm = await _formRepository.GetForm<Form>(id);
@@ -126,15 +108,7 @@ namespace EForms.API.Controllers
             if (fetchedForm == null)
                 return NotFound("This form doesn't exist!!");
 
-            // Check each value if sent or not and then proceed with the replacement.
-            if (formToUpdateDto.Name != null)
-                fetchedForm.Name = formToUpdateDto.Name;
-
-            if (formToUpdateDto.Description != null)
-                fetchedForm.Description = formToUpdateDto.Description;
-
-            if (formToUpdateDto.ColumnRepresentation != 0)
-                fetchedForm.ColumnRepresentation = formToUpdateDto.ColumnRepresentation;
+            _containerService.SimpleUpdateContainer<Form>(ref fetchedForm, formToUpdateDto);
 
             var updatedForm = await _formRepository.UpdateForm<Form>(id, fetchedForm);
 
@@ -150,6 +124,23 @@ namespace EForms.API.Controllers
                 return NotFound("This form doesn't exist!!");
 
             return Ok(result);
+        }
+
+        [HttpPost("{id}/answer")]
+        public async Task<IActionResult> AnswerForm([FromRoute] string id, [FromBody] FormAnswersDto formAnswersDto)
+        {
+            var fetchedForm = await _formRepository.GetForm<Form>(id);
+
+            // Check the form existence in the DB
+            if (fetchedForm == null)
+                return NotFound("This form doesn't exist!!");
+
+            // Add all user's answers on one form at once
+            fetchedForm.FormAnswers = _formService.AnswerForm(ref fetchedForm, formAnswersDto);
+
+            var updatedForm = await _formRepository.UpdateForm<Form>(id, fetchedForm);
+
+            return Ok(updatedForm);
         }
     }
 }

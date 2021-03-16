@@ -15,18 +15,21 @@ namespace EForms.API.Controllers
     [ApiController]
     public class SectionsController : ControllerBase
     {
+        private readonly IContainerService _containerService;
         private readonly IFormRepository _formRepository;
         private readonly ISectionService _sectionService;
 
-        public SectionsController(IFormRepository formRepository,
+        public SectionsController(IContainerService containerService,
+                                IFormRepository formRepository,
                                 ISectionService sectionService)
         {
+            _containerService = containerService;
             _formRepository = formRepository;
             _sectionService = sectionService;
         }
 
         [HttpPost("{formId}/section")]
-        public async Task<IActionResult> CreateSimpleSection(string formId, [FromBody] SimpleSectionToInsertDto sectionToInsertDto)
+        public async Task<IActionResult> CreateSection(string formId, [FromBody] SectionToInsertDto sectionToInsertDto)
         {
             Form fetchedForm = await _formRepository.GetForm<Form>(formId);
 
@@ -35,27 +38,9 @@ namespace EForms.API.Controllers
                 return NotFound("This form doesn't exist!!");
 
             // Create the new section and populate its values
-            Section sectionToCreate = new Section
-            {
-                Name = sectionToInsertDto.Name,
-                Description = sectionToInsertDto.Description,
-                ColumnRepresentation = sectionToInsertDto.ColumnRepresentation
-            };
+            Section sectionToCreate = (Section) _containerService.PopulateContainer<Section>(sectionToInsertDto);
 
-            // Empty object to hold the stored sections in the fetchedForm
-            var existedSections = new List<Section>();
-
-            // Check whether the fethed form have any previous section or not
-            /*
-             * If any sections were already in the fetched form
-             * a copy should be done to add to it the newly section
-            */
-            if (fetchedForm.Sections != null)
-                existedSections = fetchedForm.Sections;
-
-            existedSections.Add(sectionToCreate);
-
-            fetchedForm.Sections = existedSections;
+            _sectionService.AddSectionToForm(ref fetchedForm, sectionToCreate);
 
             var updatedForm = await _formRepository.UpdateForm<Form>(formId, fetchedForm);
 
@@ -120,7 +105,7 @@ namespace EForms.API.Controllers
             if (fetchedSection == null)
                 return NotFound("This Section doesnt exist!!");
 
-           _sectionService.UpdateSimpleSection(ref fetchedSection, sectionToUpdateDto);
+           _containerService.SimpleUpdateContainer<Section>(ref fetchedSection, sectionToUpdateDto);
 
             var updatedForm = await _formRepository.UpdateForm<Form>(formId, fetchedForm);
 
@@ -140,7 +125,7 @@ namespace EForms.API.Controllers
             Section fetchedSection = _sectionService.GetSectionFromForm(ref fetchedForm, sectionId);
 
             // If found delete the section return 200/Form
-            if (fetchedForm != null)
+            if (fetchedSection != null)
             {
                 fetchedForm.Sections.Remove(fetchedSection);
 
