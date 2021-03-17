@@ -4,7 +4,7 @@ namespace EForms.API.Core.Dtos.Form
 {
     public class FormToUpdateDto : IContainerToUpdateDto
     {
-        public string Name { get; set; }
+        public string Header { get; set; }
         public string Description { get; set; }
         public int ColumnRepresentation { get; set; }
     }

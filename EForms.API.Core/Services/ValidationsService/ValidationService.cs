@@ -2,13 +2,14 @@
 using System;
 using System.Globalization;
 
-namespace EForms.API.Core.Services.RestrictionsService
+namespace EForms.API.Core.Services.ValidationsService
 {
     public abstract class ValidationService
     {
-        //public abstract bool checkRestriction(string userAnswer);
-        public abstract bool checkRestriction(string userAnswer, string rightOperand);
-        public abstract bool checkRestriction(string userAnswer, string rightOperand, string extraOperand);
+        public virtual string ErrorMessage()
+        {
+            return "Please follow the question requirements";
+        }
         public static int StringToIntConverstion(string operand)
         {
             int convertedValue;

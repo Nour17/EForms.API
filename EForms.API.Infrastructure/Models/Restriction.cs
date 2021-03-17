@@ -32,7 +32,10 @@
         // Checkbox
         AtLeastChecked = 19,
         ExactlyChecked = 20,
-        AtMostChecked = 21
+        AtMostChecked = 21,
+        //
+        Email = 22,
+        URL = 23,
     }
 
     public class Restriction
@@ -40,6 +43,7 @@
         public RestrictionType Condition { get; set; }
         public string RightOperand { get; set; }
         public string ExtraOperand { get; set; }
+        public string CustomErrorMessage { get; set; }
         public bool HaveExtraOperand()
         {
             if (Condition == RestrictionType.NumberIsLessThanOrEqual

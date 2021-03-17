@@ -1,9 +1,10 @@
-﻿using EForms.API.Infrastructure.Models;
+﻿using EForms.API.Core.Services.ValidationsService.Abstractions;
+using EForms.API.Infrastructure.Models;
 using System;
 
-namespace EForms.API.Core.Services.RestrictionsService.Restrictions
+namespace EForms.API.Core.Services.ValidationsService.Restrictions
 {
-    public class NumberTypeRestriction : ValidationService
+    public class NumberTypeRestriction : ValidateDoubleInput
     {
         public override bool checkRestriction(string userAnswer, string rightOperand)
         {
@@ -20,10 +21,6 @@ namespace EForms.API.Core.Services.RestrictionsService.Restrictions
                 return double.TryParse(userAnswer, out valueHolder);
             }
 
-            return false;
-        }
-        public override bool checkRestriction(string userAnswer, string rightOperand, string extraOperand)
-        {
             return false;
         }
     }

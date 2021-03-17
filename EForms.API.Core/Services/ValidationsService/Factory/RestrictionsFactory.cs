@@ -1,6 +1,9 @@
-﻿using EForms.API.Core.Services.RestrictionsService;
+﻿using EForms.API.Core.Services.ValidationsService;
 using EForms.API.Infrastructure.Models;
-using EForms.API.Core.Services.RestrictionsService.Restrictions;
+using EForms.API.Core.Services.ValidationsService.Restrictions;
+using System;
+using System.Globalization;
+using EForms.API.Core.Services.ValidationsService.Abstractions;
 
 namespace EForms.API.Core.Services.RestrictionsServices.Factory
 {
@@ -12,9 +15,9 @@ namespace EForms.API.Core.Services.RestrictionsServices.Factory
                                             string extraOperand = null)
         {
             // Create new instance based on the restriction type
-            var restrictionChecker = CreateRestriction(restriction);
+            var restrictionObject = CreateRestriction(restriction);
 
-            if (restrictionChecker == null)
+            if (restrictionObject == null)
             {
                 return false;
             }
@@ -26,12 +29,14 @@ namespace EForms.API.Core.Services.RestrictionsServices.Factory
                 if (string.IsNullOrWhiteSpace(extraOperand))
                     return false;
                 // Call the checkRestriction with three parameters which include the extra operand logic
-                return restrictionChecker.checkRestriction(userAnswer, rightOperand, extraOperand);
+                ValidateTripleInput checker = (ValidateTripleInput)restrictionObject;
+                return checker.checkRestriction(userAnswer, rightOperand, extraOperand);
             }
-            else
+            else 
             {
                 // If no Call the checkRestriction with two parameters which exclude the extra operand logic
-                return restrictionChecker.checkRestriction(userAnswer, rightOperand);
+                ValidateDoubleInput checker = (ValidateDoubleInput)restrictionObject;
+                return checker.checkRestriction(userAnswer, rightOperand);
             }
         }
 
@@ -86,8 +91,39 @@ namespace EForms.API.Core.Services.RestrictionsServices.Factory
                     return new CheckboxAtMostCheckRestriction();
                 case RestrictionType.AtMostChecked:
                     return new CheckboxExactlyCheckRestriction();
+                // Question type restrictions
+                case RestrictionType.Email:
+                    return new EmailTypeRestriction();
+                case RestrictionType.URL:
+                    return new URLTypeRestriction();
             }
             return null;
+        }
+
+        public static int StringToIntConverstion(string operand)
+        {
+            int convertedValue;
+
+            // Convert operand value from string to int and if successful copy the value to convertedValue variable
+            // else return 0
+            if (!(int.TryParse(operand, out convertedValue)))
+                return 0;
+
+            return convertedValue;
+        }
+        public static DateTime? StringToDateConverstion(string operand)
+        {
+            DateTime convertedValue;
+            CultureInfo provider = CultureInfo.InvariantCulture;
+
+            bool isSuccess = DateTime.TryParseExact(operand, "MM/dd/yyyy", provider, DateTimeStyles.None, out convertedValue);
+
+            // Convert operand value from string to DateTime and if successful copy the value to convertedValue variable
+            // else return null
+            if (isSuccess)
+                return null;
+
+            return convertedValue;
         }
     }
 }

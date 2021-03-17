@@ -32,7 +32,7 @@ namespace EForms.API.Core.Services
             }
 
             // Create new Container object with the incoming properties from the request payload
-            container.Name = containerToInsertDto.Name;
+            container.Header = containerToInsertDto.Header;
             container.Description = containerToInsertDto.Description;
             container.ColumnRepresentation = containerToInsertDto.ColumnRepresentation;
 
@@ -45,8 +45,8 @@ namespace EForms.API.Core.Services
             IContainerElement containerElement = (IContainerElement)oldContainer;
 
             // Check each value if sent or not and then proceed with the replacement.
-            if (newContainer.Name != null)
-                containerElement.Name = newContainer.Name;
+            if (newContainer.Header != null)
+                containerElement.Header = newContainer.Header;
 
             if (newContainer.Description != null)
                 containerElement.Description = newContainer.Description;

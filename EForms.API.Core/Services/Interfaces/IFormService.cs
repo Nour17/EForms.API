@@ -9,6 +9,6 @@ namespace EForms.API.Core.Services.Interfaces
 {
     public interface IFormService
     {
-        List<FormAnswer> AnswerForm(ref Form form, FormAnswersDto formAnswers);
+        List<ErrorMessage> ValidateFormAnswers(ref Form form, FormAnswersDto formAnswers);
     }
 }

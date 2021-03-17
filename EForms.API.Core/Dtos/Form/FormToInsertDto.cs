@@ -11,7 +11,7 @@ namespace EForms.API.Core.Dtos.Form
     public class FormToInsertDto : IContainerToCreateDto
     {
         [Required]
-        public string Name { get; set; }
+        public string Header { get; set; }
         [Required]
         public string Description { get; set; }
         [Required]

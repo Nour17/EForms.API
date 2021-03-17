@@ -62,16 +62,6 @@ namespace EForms.API.Core.Services
             parentElement = (T)containerElement;
         }
 
-        public bool CheckAnswer(Question question, string userAnswer)
-        {
-            Restriction restriction = question.Restriction;
-
-            var restrictionChecker = RestrictionsFactory.CreateRestriction(restriction);
-            var isAcceptable = restrictionChecker.checkRestriction(userAnswer, question.Restriction.RightOperand);
-
-            return isAcceptable;
-        }
-
         private Question populateQuestion(QuestionToInsertDto questionToInsertDto)
         {
             // Create and populate new question instance
@@ -86,7 +76,8 @@ namespace EForms.API.Core.Services
                 {
                     Condition = (RestrictionType)questionToInsertDto.RestrictionCondition,
                     RightOperand = questionToInsertDto.RightOperand,
-                    ExtraOperand = questionToInsertDto.ExtraOperand
+                    ExtraOperand = questionToInsertDto.ExtraOperand,
+                    CustomErrorMessage = questionToInsertDto.CustomErrorMessage
                 }
             };
 

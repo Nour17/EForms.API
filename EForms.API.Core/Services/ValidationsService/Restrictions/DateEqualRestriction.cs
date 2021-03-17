@@ -1,8 +1,9 @@
-﻿using System;
+﻿using EForms.API.Core.Services.ValidationsService.Abstractions;
+using System;
 
-namespace EForms.API.Core.Services.RestrictionsService.Restrictions
+namespace EForms.API.Core.Services.ValidationsService.Restrictions
 {
-    public class DateEqualRestriction : ValidationService
+    public class DateEqualRestriction : ValidateDoubleInput
     {
         public override bool checkRestriction(string userAnswer, string rightOperand)
         {
@@ -15,11 +16,6 @@ namespace EForms.API.Core.Services.RestrictionsService.Restrictions
                 if (userAnswerToDateTime == rightOperandToDateTime)
                     return true;
 
-            return false;
-        }
-
-        public override bool checkRestriction(string userAnswer, string rightOperand, string extraOperand)
-        {
             return false;
         }
     }

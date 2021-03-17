@@ -1,14 +1,10 @@
-﻿using System;
+﻿using EForms.API.Core.Services.ValidationsService.Abstractions;
+using System;
 
-namespace EForms.API.Core.Services.RestrictionsService.Restrictions
+namespace EForms.API.Core.Services.ValidationsService.Restrictions
 {
-    public class NumberNotBetweenRestriction : ValidationService
+    public class NumberNotBetweenRestriction : ValidateTripleInput
     {
-        public override bool checkRestriction(string userAnswer, string rightOperand)
-        {
-            return false;
-        }
-
         public override bool checkRestriction(string userAnswer, string rightOperand, string extraOperand)
         {
             int rightOperandToInt = StringToIntConverstion(rightOperand);

@@ -1,15 +1,12 @@
-﻿using System;
+﻿using EForms.API.Core.Services.ValidationsService.Abstractions;
+using System;
 
-namespace EForms.API.Core.Services.RestrictionsService.Restrictions
+namespace EForms.API.Core.Services.ValidationsService.Restrictions
 {
-    public class NumberBetweenRestriction : ValidationService
+    public class NumberBetweenRestriction : ValidateTripleInput
     {
-        public override bool checkRestriction(string userAnswer, string rightOperand)
-        {
-            return false;
-        }
-        public override bool checkRestriction(string userAnswer, string rightOperand, string extraOperand)
-        {
+         public override bool checkRestriction(string userAnswer, string rightOperand, string extraOperand)
+         {
             int rightOperandToInt = StringToIntConverstion(rightOperand);
             int extraOperandToInt = StringToIntConverstion(extraOperand);
             int userAnswerToInt = StringToIntConverstion(userAnswer);
@@ -21,6 +18,6 @@ namespace EForms.API.Core.Services.RestrictionsService.Restrictions
                     return true;
 
             return false;
-        }
+         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using EForms.API.Infrastructure.Models.Interfaces;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace EForms.API.Infrastructure.Models
         File = 11
     }
 
-    public class Question
+    public class Question : IElement
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string InternalId { get; set; } = ObjectId.GenerateNewId().ToString();

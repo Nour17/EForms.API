@@ -6,7 +6,7 @@ namespace EForms.API.Core.Dtos.Container
 {
     public interface IContainerToUpdateDto
     {
-        public string Name { get; set; }
+        public string Header { get; set; }
         public string Description { get; set; }
         public int ColumnRepresentation { get; set; }
     }

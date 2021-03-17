@@ -68,44 +68,44 @@ namespace EForms.API.Controllers
             return Ok(updatedForm);
         }
 
-        [HttpPost("form/{formId}/questionanswer")]
-         public async Task<IActionResult> AnswerQuestion([FromRoute] string formId, QuestionToAnswerDto questionToAnswerDto)
-         {
-             var fetchedForm = await _formRepository.GetForm<Form>(formId);
+        //[HttpPost("form/{formId}/questionanswer")]
+        // public async Task<IActionResult> AnswerQuestion([FromRoute] string formId, QuestionToAnswerDto questionToAnswerDto)
+        // {
+        //     var fetchedForm = await _formRepository.GetForm<Form>(formId);
 
-             // Check the form existence in the DB
-             if (fetchedForm == null)
-                 return NotFound("This form doesn't exist!!");
+        //     // Check the form existence in the DB
+        //     if (fetchedForm == null)
+        //         return NotFound("This form doesn't exist!!");
 
-             var question = new Question();
+        //     var question = new Question();
 
-             if (questionToAnswerDto.SectionId == null)
-             {
-                question = _questionService.GetQuestion<Form>(fetchedForm, questionToAnswerDto.QuestionId);
-             }
-             else
-             {
-                var section = _sectionService.GetSectionFromForm(ref fetchedForm, questionToAnswerDto.SectionId);
-                question = _questionService.GetQuestion<Section>(section, questionToAnswerDto.QuestionId);
-             }
+        //     if (questionToAnswerDto.SectionId == null)
+        //     {
+        //        question = _questionService.GetQuestion<Form>(fetchedForm, questionToAnswerDto.QuestionId);
+        //     }
+        //     else
+        //     {
+        //        var section = _sectionService.GetSectionFromForm(ref fetchedForm, questionToAnswerDto.SectionId);
+        //        question = _questionService.GetQuestion<Section>(section, questionToAnswerDto.QuestionId);
+        //     }
 
-            bool isAcceptableAnwser = false;
+        //    bool isAcceptableAnwser = false;
 
-             if (question.Restriction != null)
-                   isAcceptableAnwser = _questionService.CheckAnswer(question, questionToAnswerDto.Answer);
+        //     if (question.Restriction != null)
+        //           isAcceptableAnwser = _questionService.CheckAnswer(question, questionToAnswerDto.Answer);
 
-            Answer answer = new Answer
-            {
-                Header = question.Header,
-                UserAnswer = questionToAnswerDto.Answer
-            };
+        //    Answer answer = new Answer
+        //    {
+        //        QuestionId = question.InternalId,
+        //        UserAnswer = questionToAnswerDto.Answer
+        //    };
 
-            question.QuestionAnswers = updatedQuestionAnswers(questionToAnswerDto.UserId, answer, question);
+        //    question.QuestionAnswers = updatedQuestionAnswers(questionToAnswerDto.UserId, answer, question);
 
-            var updatedForm = await _formRepository.UpdateForm<Form>(formId, fetchedForm);
+        //    var updatedForm = await _formRepository.UpdateForm<Form>(formId, fetchedForm);
 
-            return Ok(updatedForm);
-        }
+        //    return Ok(updatedForm);
+        //}
 
         private List<QuestionAnswer> updatedQuestionAnswers(string userId, Answer answer, Question question)
         {

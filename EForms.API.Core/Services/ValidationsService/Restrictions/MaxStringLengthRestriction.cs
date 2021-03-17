@@ -1,8 +1,9 @@
-﻿using System;
+﻿using EForms.API.Core.Services.ValidationsService.Abstractions;
+using System;
 
-namespace EForms.API.Core.Services.RestrictionsService.Restrictions
+namespace EForms.API.Core.Services.ValidationsService.Restrictions
 {
-    public class MinStringLengthRestriction : ValidationService
+    public class MaxStringLengthRestriction : ValidateDoubleInput
     {
         public override bool checkRestriction(string userAnswer, string rightOperand)
         {
@@ -11,14 +12,9 @@ namespace EForms.API.Core.Services.RestrictionsService.Restrictions
             // Check if rightOperandToInt is not 0 as it is an indicator that the conversion is done successfuly
             if (rightOperandToInt != 0)
                 // Check if the restriction is fullfilled 
-                if (userAnswer.Length > rightOperandToInt)
+                if (userAnswer.Length < rightOperandToInt)
                     return true;
 
-            return false;
-        }
-
-        public override bool checkRestriction(string userAnswer, string rightOperand, string extraOperand)
-        {
             return false;
         }
     }

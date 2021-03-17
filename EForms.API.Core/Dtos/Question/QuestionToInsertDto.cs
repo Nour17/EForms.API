@@ -14,5 +14,6 @@
         public int RestrictionCondition { get; set; }
         public string RightOperand { get; set; }
         public string ExtraOperand { get; set; }
+        public string CustomErrorMessage { get; set; }
     }
 }

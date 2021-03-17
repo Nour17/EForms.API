@@ -136,11 +136,16 @@ namespace EForms.API.Controllers
                 return NotFound("This form doesn't exist!!");
 
             // Add all user's answers on one form at once
-            fetchedForm.FormAnswers = _formService.AnswerForm(ref fetchedForm, formAnswersDto);
+            List<ErrorMessage> errorMessages = _formService.ValidateFormAnswers(ref fetchedForm, formAnswersDto);
 
-            var updatedForm = await _formRepository.UpdateForm<Form>(id, fetchedForm);
+            if (errorMessages.Count == 0 )
+            {
+                var updatedForm = await _formRepository.UpdateForm<Form>(id, fetchedForm);
 
-            return Ok(updatedForm);
+                return Ok(updatedForm);
+            }
+
+            return Ok(errorMessages);
         }
     }
 }
