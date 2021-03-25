@@ -13,6 +13,7 @@ namespace EForms.API.Infrastructure.Models.Interfaces
         public string InternalId { get; set; }
         public string Header { get; set; }
         public string Description { get; set; }
+        public int Position { get; set; }
         [BsonDateTimeOptions]
         public DateTime CreatedAt { get; set; }
         [BsonDateTimeOptions]

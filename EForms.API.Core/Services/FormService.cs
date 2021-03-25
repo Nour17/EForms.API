@@ -51,20 +51,8 @@ namespace EForms.API.Core.Services
             formAnswerToCreate.UserId = formAnswers.UserId;
             // Add the user's answers to the formAnswer object
             formAnswerToCreate.Answers = answers;
-
-            // Empty object to hold the stored sections in the fetchedForm
-            var existedFormAnswers = new List<FormAnswer>();
-
-            // Check whether the fethed form is answered before by other users or not
-            /*
-             * If any answers were already in the fetched form
-             * a copy should be done to add to it the newly formAnswers
-            */
-            if (form.FormAnswers != null)
-                existedFormAnswers = form.FormAnswers;
-
-            existedFormAnswers.Add(formAnswerToCreate);
-            form.FormAnswers = existedFormAnswers;
+            // Add the formAnswerObject to the existed answers in the form
+            form.FormAnswers.Add(formAnswerToCreate);
 
             return formErrors;
         }
@@ -102,7 +90,7 @@ namespace EForms.API.Core.Services
             ErrorMessage errorMessage = new ErrorMessage();
 
             // The RestrictionsFactory will Map to the appropriate logic based on the Question Restriction
-            bool isAcceptable = RestrictionsFactory.ApplyRestriction(question.Restriction, userAnswer, question.Restriction.RightOperand, question.Restriction.ExtraOperand);
+            bool isAcceptable = RestrictionsFactory.ApplyRestriction(question.Restriction, userAnswer);
 
             // The Answer is VALID THEN add the answer to the list
             if (isAcceptable)

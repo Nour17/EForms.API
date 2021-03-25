@@ -1,4 +1,7 @@
-﻿namespace EForms.API.Core.Dtos.Question
+﻿using System;
+using System.Collections.Generic;
+
+namespace EForms.API.Core.Dtos.Question
 {
     public class QuestionToInsertDto
     {
@@ -7,9 +10,11 @@
         // Question related data
         public string Header { get; set; }
         public string Description { get; set; }
+        public int Position { get; set; }
         public bool IsRequired  { get; set; }
         public int Genre { get; set; }
         public int Type { get; set; }
+        public List<String> Options { get; set; }
         // Restriction realted data
         public int RestrictionCondition { get; set; }
         public string RightOperand { get; set; }

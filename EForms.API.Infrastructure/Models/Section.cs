@@ -12,8 +12,9 @@ namespace EForms.API.Infrastructure.Models
         public string InternalId { get; set; } = ObjectId.GenerateNewId().ToString();
         public string Header { get; set; }
         public string Description { get; set; }
+        public int Position { get; set; }
         public int ColumnRepresentation { get; set; } = 1;
-        public List<Question> Questions { get; set; }
+        public List<Question> Questions { get; set; } = new List<Question>();
         [BsonDateTimeOptions]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [BsonDateTimeOptions]

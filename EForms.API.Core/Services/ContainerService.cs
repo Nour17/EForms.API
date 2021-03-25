@@ -34,6 +34,7 @@ namespace EForms.API.Core.Services
             // Create new Container object with the incoming properties from the request payload
             container.Header = containerToInsertDto.Header;
             container.Description = containerToInsertDto.Description;
+            container.Position = containerToInsertDto.Position;
             container.ColumnRepresentation = containerToInsertDto.ColumnRepresentation;
 
             return container;

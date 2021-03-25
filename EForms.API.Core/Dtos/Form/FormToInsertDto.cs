@@ -16,6 +16,7 @@ namespace EForms.API.Core.Dtos.Form
         public string Description { get; set; }
         [Required]
         public int ColumnRepresentation { get; set; }
+        public int Position { get; set; } = 0;
         [Required]
         public string UserId { get; set; }
         public List<SectionToInsertDto> Sections { get; set; }

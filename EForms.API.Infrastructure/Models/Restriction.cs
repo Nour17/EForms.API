@@ -43,7 +43,7 @@
         public RestrictionType Condition { get; set; }
         public string RightOperand { get; set; }
         public string ExtraOperand { get; set; }
-        public string CustomErrorMessage { get; set; }
+        public string CustomErrorMessage { get; set; } = "Please follow the question requirements";
         public bool HaveExtraOperand()
         {
             if (Condition == RestrictionType.NumberIsLessThanOrEqual

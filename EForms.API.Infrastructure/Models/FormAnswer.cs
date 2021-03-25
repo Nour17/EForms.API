@@ -10,7 +10,7 @@ namespace EForms.API.Infrastructure.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string InternalId { get; set; } = ObjectId.GenerateNewId().ToString();
         public string UserId { get; set; }
-        public List<Answer> Answers { get; set; }
+        public List<Answer> Answers { get; set; } = new List<Answer>();
         [BsonDateTimeOptions]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }

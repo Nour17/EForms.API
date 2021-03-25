@@ -14,6 +14,9 @@ namespace EForms.API.Core.Dtos.Section
         [Required]
         public string Description { get; set; }
         [Required]
+        public int Position { get; set; }
+
+        [Required]
         public int ColumnRepresentation { get; set; }
         public List<QuestionToInsertDto> Questions { get; set; }
     }

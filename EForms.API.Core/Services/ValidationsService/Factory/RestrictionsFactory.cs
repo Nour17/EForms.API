@@ -10,9 +10,7 @@ namespace EForms.API.Core.Services.RestrictionsServices.Factory
     public static class RestrictionsFactory
     {
         public static bool ApplyRestriction(Restriction restriction, 
-                                            string userAnswer, 
-                                            string rightOperand, 
-                                            string extraOperand = null)
+                                            string userAnswer)
         {
             // Create new instance based on the restriction type
             var restrictionObject = CreateRestriction(restriction);
@@ -22,21 +20,27 @@ namespace EForms.API.Core.Services.RestrictionsServices.Factory
                 return false;
             }
 
+            if(string.IsNullOrWhiteSpace(restriction.RightOperand) && string.IsNullOrWhiteSpace(restriction.ExtraOperand))
+            {
+                // Call the checkRestriction with one parameter which dont include any operand to be checked with
+                ValidateSingleInput checker = (ValidateSingleInput)restrictionObject;
+                return checker.checkRestriction(userAnswer);
+            }
             // Check if the restriction type have extraOperand
-            if (restriction.HaveExtraOperand())
+            else if (restriction.HaveExtraOperand())
             {
                 // If yes validate the extraOperand sent
-                if (string.IsNullOrWhiteSpace(extraOperand))
+                if (string.IsNullOrWhiteSpace(restriction.ExtraOperand))
                     return false;
                 // Call the checkRestriction with three parameters which include the extra operand logic
                 ValidateTripleInput checker = (ValidateTripleInput)restrictionObject;
-                return checker.checkRestriction(userAnswer, rightOperand, extraOperand);
+                return checker.checkRestriction(userAnswer, restriction.RightOperand, restriction.ExtraOperand);
             }
             else 
             {
                 // If no Call the checkRestriction with two parameters which exclude the extra operand logic
                 ValidateDoubleInput checker = (ValidateDoubleInput)restrictionObject;
-                return checker.checkRestriction(userAnswer, rightOperand);
+                return checker.checkRestriction(userAnswer, restriction.RightOperand);
             }
         }
 

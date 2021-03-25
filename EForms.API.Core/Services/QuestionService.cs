@@ -10,26 +10,6 @@ namespace EForms.API.Core.Services
 {
     public class QuestionService : IQuestionService
     {
-        public Question GetQuestion(Form form, string questionId)
-        {
-            var question = new Question();
-
-            question = GetQuestion<Form>(form, questionId);
-
-            if (question != null)
-                return question;
-
-            foreach (Section section in form.Sections)
-            {
-                question = GetQuestion<Section>(section, questionId);
-
-                if (question != null)
-                    return question;
-            }
-
-            return null;
-        }
-
         public Question GetQuestion<T>(T parentElement, string questionId)
         {
             // Create IContainerElement object whether it is form or section to access the Questions property
@@ -42,21 +22,11 @@ namespace EForms.API.Core.Services
         {
             Question questionToInsert = populateQuestion(questionToInsertDto);
 
-            var existedQuestions = new List<Question>();
-            /*
-                * If any questions were already in the fetched form
-                * a copy should be done to add to it the newly question
-            */
-
             // Create IContainerElement object whether it is form or section to access the Questions property
             IContainerElement containerElement = (IContainerElement)parentElement;
 
-            if (containerElement.Questions != null)
-                existedQuestions = containerElement.Questions;
-
-            existedQuestions.Add(questionToInsert);
-            // Copy back the updated list of questions
-            containerElement.Questions = existedQuestions;
+            // Add the question to the Question list in the parent element
+            containerElement.Questions.Add(questionToInsert);
 
             // Override the sent property with the updated IContainerElement object and cast it back to generic type
             parentElement = (T)containerElement;
@@ -70,8 +40,10 @@ namespace EForms.API.Core.Services
                 Header = questionToInsertDto.Header,
                 Description = questionToInsertDto.Description,
                 IsRequired = questionToInsertDto.IsRequired,
+                Position = questionToInsertDto.Position,
                 Genre = (QuestionGenre)questionToInsertDto.Genre,
                 Type = (QuestionType)questionToInsertDto.Type,
+                Options = questionToInsertDto.Options,
                 Restriction = new Restriction
                 {
                     Condition = (RestrictionType)questionToInsertDto.RestrictionCondition,
