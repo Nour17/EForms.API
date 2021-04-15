@@ -34,6 +34,43 @@ namespace EForms.API.Core.Services
 
         private Question populateQuestion(QuestionToInsertDto questionToInsertDto)
         {
+            // If there are restrictions object sent then create and populate Restriction Object
+            Restriction restriction = null;
+            if (questionToInsertDto.Restriction != null)
+            {
+                restriction = new Restriction
+                {
+                    Condition = (RestrictionType)questionToInsertDto.Restriction.Condition,
+                    RightOperand = questionToInsertDto.Restriction.RightOperand,
+                    ExtraOperand = questionToInsertDto.Restriction.ExtraOperand,
+                    CustomErrorMessage = questionToInsertDto.Restriction.CustomErrorMessage
+                };
+            }
+
+            // If there are restrictions object sent then create and populate Restriction Object
+            Options options = null;
+            if (questionToInsertDto.Options != null)
+            {
+                options = new Options
+                {
+                    OtherOption = questionToInsertDto.Options.OtherOption,
+                    CustomOptions = questionToInsertDto.Options.CustomOptions
+                };
+            }
+
+            // If there are restrictions object sent then create and populate Restriction Object
+            Range range = null;
+            if (questionToInsertDto.Range != null)
+            {
+                range = new Range
+                {
+                    LeftLabel = questionToInsertDto.Range.LeftLabel,
+                    RightLabel = questionToInsertDto.Range.RightLabel,
+                    LeftValue = questionToInsertDto.Range.LeftValue,
+                    RightValue = questionToInsertDto.Range.RightValue
+                };
+            }
+
             // Create and populate new question instance
             Question createdQuestion = new Question
             {
@@ -43,14 +80,9 @@ namespace EForms.API.Core.Services
                 Position = questionToInsertDto.Position,
                 Genre = (QuestionGenre)questionToInsertDto.Genre,
                 Type = (QuestionType)questionToInsertDto.Type,
-                Options = questionToInsertDto.Options,
-                Restriction = new Restriction
-                {
-                    Condition = (RestrictionType)questionToInsertDto.RestrictionCondition,
-                    RightOperand = questionToInsertDto.RightOperand,
-                    ExtraOperand = questionToInsertDto.ExtraOperand,
-                    CustomErrorMessage = questionToInsertDto.CustomErrorMessage
-                }
+                Options = options,
+                Range = range,
+                Restriction = restriction
             };
 
             return createdQuestion;

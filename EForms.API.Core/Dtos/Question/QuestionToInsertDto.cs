@@ -1,4 +1,7 @@
-﻿using System;
+﻿using EForms.API.Core.Dtos.Option;
+using EForms.API.Core.Dtos.Range;
+using EForms.API.Core.Dtos.Restriction;
+using System;
 using System.Collections.Generic;
 
 namespace EForms.API.Core.Dtos.Question
@@ -14,11 +17,11 @@ namespace EForms.API.Core.Dtos.Question
         public bool IsRequired  { get; set; }
         public int Genre { get; set; }
         public int Type { get; set; }
-        public List<String> Options { get; set; }
+        // Options Related Data
+        public OptionsToAddDto Options { get; set; }
+        // Range Related Data
+        public RangeToAddDto Range { get; set; }
         // Restriction realted data
-        public int RestrictionCondition { get; set; }
-        public string RightOperand { get; set; }
-        public string ExtraOperand { get; set; }
-        public string CustomErrorMessage { get; set; }
+        public RestrictionToAddDto Restriction { get; set; }
     }
 }

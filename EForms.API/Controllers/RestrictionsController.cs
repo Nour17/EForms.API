@@ -28,39 +28,39 @@ namespace EForms.API.Controllers
             _questionService = questionService;
         }
 
-        [HttpPost("form/{formId}")]
-        public async Task<IActionResult> UpdateQuestionWithRestriction(string formId, RestrictionToAddDto restrictionToAddDto)
-        {
-            var fetchedForm = await _formRepository.GetForm<Form>(formId);
+        //    [HttpPost("form/{formId}")]
+        //    public async Task<IActionResult> UpdateQuestionWithRestriction(string formId, RestrictionToAddDto restrictionToAddDto)
+        //    {
+        //        var fetchedForm = await _formRepository.GetForm<Form>(formId);
 
-            // Check the form existence in the DB
-            if (fetchedForm == null)
-                return NotFound("This form doesn't exist!!");
+        //        // Check the form existence in the DB
+        //        if (fetchedForm == null)
+        //            return NotFound("This form doesn't exist!!");
 
-            var question = new Question();
-            var restrictionToInsert = new Restriction
-            {
-                Condition = (RestrictionType)restrictionToAddDto.RestrictionType,
-                RightOperand = restrictionToAddDto.RightOperand,
-                ExtraOperand = restrictionToAddDto.ExtraOperand
-            };
+        //        var question = new Question();
+        //        var restrictionToInsert = new Restriction
+        //        {
+        //            Condition = (RestrictionType)restrictionToAddDto.Condition,
+        //            RightOperand = restrictionToAddDto.RightOperand,
+        //            ExtraOperand = restrictionToAddDto.ExtraOperand
+        //        };
 
-            if (restrictionToAddDto.SectionId == null)
-            {
-                question = _questionService.GetQuestion<Form>(fetchedForm, restrictionToAddDto.QuestionId);
-            }
-            else
-            {
-                var section = _sectionService.GetSectionFromForm(ref fetchedForm, restrictionToAddDto.SectionId);
-                question = _questionService.GetQuestion<Section>(section, restrictionToAddDto.QuestionId);
-            }
+        //        if (restrictionToAddDto.SectionId == null)
+        //        {
+        //            question = _questionService.GetQuestion<Form>(fetchedForm, restrictionToAddDto.QuestionId);
+        //        }
+        //        else
+        //        {
+        //            var section = _sectionService.GetSectionFromForm(ref fetchedForm, restrictionToAddDto.SectionId);
+        //            question = _questionService.GetQuestion<Section>(section, restrictionToAddDto.QuestionId);
+        //        }
 
-            question.Restriction = restrictionToInsert;
+        //        question.Restriction = restrictionToInsert;
 
 
-            var updatedForm = await _formRepository.UpdateForm<Form>(formId, fetchedForm);
+        //        var updatedForm = await _formRepository.UpdateForm<Form>(formId, fetchedForm);
 
-            return Ok(updatedForm);
-        }
+        //        return Ok(updatedForm);
+        //    }
     }
 }

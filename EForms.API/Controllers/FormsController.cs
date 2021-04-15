@@ -31,7 +31,7 @@ namespace EForms.API.Controllers
         [HttpPost("submit")]
         public async Task<IActionResult> CreateFullForm(FormToInsertDto formToInsertDto)
         {
-            if (formToInsertDto.Questions.Count == 0 || formToInsertDto.Questions == null)
+            if (formToInsertDto.Questions == null)
             {
                 return BadRequest("Form must atleast have one question!!");
             }
@@ -39,20 +39,25 @@ namespace EForms.API.Controllers
             Form formToCreate = (Form)_containerService.PopulateContainer<Form>(formToInsertDto);
 
             _containerService.AddListOfQuestions<Form>(ref formToCreate, formToInsertDto.Questions);
+           
 
             // List of sections to hold the newly created sections from the request
             var sectionsToBeAdded = new List<Section>();
 
-            // Loop through the Sections in the incoming request
-            foreach (SectionToInsertDto sectionToInsertDto in formToInsertDto.Sections)
+            if (formToInsertDto.Sections != null)
             {
-                Section sectionToCreate = (Section)_containerService.PopulateContainer<Section>(sectionToInsertDto);
+                // Loop through the Sections in the incoming request
+                foreach (SectionToInsertDto sectionToInsertDto in formToInsertDto.Sections)
+                {
+                    Section sectionToCreate = (Section)_containerService.PopulateContainer<Section>(sectionToInsertDto);
 
-                _containerService.AddListOfQuestions<Section>(ref sectionToCreate, sectionToInsertDto.Questions);
+                    _containerService.AddListOfQuestions<Section>(ref sectionToCreate, sectionToInsertDto.Questions);
 
-                // Add the newly created section to the sectionsToBeAdded list
-                sectionsToBeAdded.Add(sectionToCreate);
+                    // Add the newly created section to the sectionsToBeAdded list
+                    sectionsToBeAdded.Add(sectionToCreate);
+                }
             }
+ 
 
             // Copy the sectionsToBeAdded list to the newly created form
             formToCreate.Sections = sectionsToBeAdded;
