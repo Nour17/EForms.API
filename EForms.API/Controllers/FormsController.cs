@@ -8,6 +8,8 @@ using EForms.API.Core.Dtos.Section;
 using System.Collections.Generic;
 using EForms.API.Core.Dtos.Container;
 using EForms.API.Core.Dtos.Answer;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace EForms.API.Controllers
 {
@@ -31,15 +33,17 @@ namespace EForms.API.Controllers
         [HttpPost("submit")]
         public async Task<IActionResult> CreateFullForm(FormToInsertDto formToInsertDto)
         {
-            if (formToInsertDto.Questions == null)
+            if (formToInsertDto.Questions == null && formToInsertDto.Sections == null)
             {
-                return BadRequest("Form must atleast have one question!!");
+                return BadRequest (new ValidationResult("Form must atleast have one question!!"));
             }
 
             Form formToCreate = (Form)_containerService.PopulateContainer<Form>(formToInsertDto);
 
-            _containerService.AddListOfQuestions<Form>(ref formToCreate, formToInsertDto.Questions);
-           
+            if (formToInsertDto.Questions != null)
+            {
+                _containerService.AddListOfQuestions<Form>(ref formToCreate, formToInsertDto.Questions);
+            }
 
             // List of sections to hold the newly created sections from the request
             var sectionsToBeAdded = new List<Section>();

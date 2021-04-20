@@ -107,23 +107,23 @@ namespace EForms.API.Controllers
         //    return Ok(updatedForm);
         //}
 
-        private List<QuestionAnswer> updatedQuestionAnswers(string userId, Answer answer, Question question)
-        {
-            QuestionAnswer questionAnswer = new QuestionAnswer
-            {
-                UserId = userId,
-                Answer = answer
-            };
+        //private List<QuestionAnswer> updatedQuestionAnswers(string userId, Answer answer, Question question)
+        //{
+        //    QuestionAnswer questionAnswer = new QuestionAnswer
+        //    {
+        //        UserId = userId,
+        //        Answer = answer
+        //    };
 
-            var existedAnswersInQuestion = new List<QuestionAnswer>();
+        //    var existedAnswersInQuestion = new List<QuestionAnswer>();
 
-            if (question.QuestionAnswers != null)
-                existedAnswersInQuestion = question.QuestionAnswers;
+        //    if (question.QuestionAnswers != null)
+        //        existedAnswersInQuestion = question.QuestionAnswers;
 
-            existedAnswersInQuestion.Add(questionAnswer);
+        //    existedAnswersInQuestion.Add(questionAnswer);
 
-            return existedAnswersInQuestion;
-        }
+        //    return existedAnswersInQuestion;
+        //}
 
         private Form updatedFormAnswers(string userId, Answer answer, Form form, Question question)
         {
