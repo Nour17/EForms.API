@@ -51,6 +51,7 @@ namespace EForms.API
 
             services.AddCors();
 
+            // Documentation
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EForms API", Version = "v1" });

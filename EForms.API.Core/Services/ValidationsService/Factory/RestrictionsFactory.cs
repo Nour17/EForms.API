@@ -59,8 +59,10 @@ namespace EForms.API.Core.Services.RestrictionsServices.Factory
                     return new StringDontContainsRestriction();
                 // Number Restriction Check
                 // I rather remove this condition
-                case RestrictionType.IsNumber:
-                    return new NumberTypeRestriction();
+                case RestrictionType.IsNumberInteger:
+                    return new NumberTypeIsIntegerRestriction();
+                case RestrictionType.IsNumberDouble:
+                    return new NumberTypeIsDoubleRestriction();
                 case RestrictionType.NumberIsLessThan:
                     return new NumberLessThanRestriction();
                 case RestrictionType.NumberIsLessThanOrEqual:
