@@ -36,7 +36,9 @@ namespace EForms.API
             services.Configure<DbSettings>(options =>
            {
                options.ConnectionString = Configuration.GetSection("EFormDatabaseString:ConnectionString").Value;
+               options.Container = Configuration.GetSection("EFormDatabaseString:Container").Value;
                options.Database = Configuration.GetSection("EFormDatabaseString:DatabaseName").Value;
+               options.IsContained = Configuration["DOTNET_RUNNIN_INCONTAINER"] != null;
            });
 
             // Repositories
