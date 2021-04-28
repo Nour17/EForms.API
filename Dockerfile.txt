@@ -1,0 +1,35 @@
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS base
+WORKDIR /app
+
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+WORKDIR /src
+COPY ["EForms.API/EForms.API.csproj", "EForms.API"]
+COPY ["EForms.Core/EForms.Core.csproj", "EForms.Core"]
+COPY ["EForms.Infrastructure/EForms.Infrastructure.csproj", "EForms.Infrastructure"]
+COPY ["EForms.Repository/EForms.API.Repository", "EForms.Repository"]
+
+RUN dotnet restore "EForms.Infrastructure/EForms.Infrastructure.csproj"
+RUN dotnet restore "EForms.Repository/EForms.Repository.csproj"
+RUN dotnet restore "EForms.Core/EForms.Core.csproj"
+RUN dotnet restore "EForms.API/EForms.API.csproj"
+
+COPY . .
+WORKDIR /src/EForms.Infrastructure
+RUN dotnet build -c Release -o /app
+
+WORKDIR /src/EForms.Repository
+RUN dotnet build -c Release -o /app
+
+WORKDIR /src/EForms.Core
+RUN dotnet build -c Release -o /app
+
+WORKDIR /src/EForms.API
+RUN dotnet build -c Release -o /app
+
+FROM build AS publish
+RUN dotnet publish -c Release -o /app
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app .
+ENTRYPOINT ["dotnet", "EForms.API.dll"]

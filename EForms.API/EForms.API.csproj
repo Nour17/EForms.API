@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>201d5893-5cd5-4cdb-bc81-97512f640b52</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,6 +10,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.OpenApi" Version="1.2.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
     <PackageReference Include="MongoDB.Bson" Version="2.12.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.12.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
