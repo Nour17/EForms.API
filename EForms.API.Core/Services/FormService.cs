@@ -1,21 +1,72 @@
-﻿using EForms.API.Core.Dtos.Answer;
+﻿using Contracts;
+using EForms.API.Core.Dtos.Answer;
+using EForms.API.Core.Dtos.Container;
 using EForms.API.Core.Dtos.Form;
 using EForms.API.Core.Dtos.Question;
+using EForms.API.Core.Dtos.Section;
 using EForms.API.Core.Services.Interfaces;
 using EForms.API.Core.Services.RestrictionsServices.Factory;
 using EForms.API.Infrastructure.Models;
+using EForms.API.Repository.Data.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EForms.API.Core.Services
 {
     public class FormService : IFormService
     {
-        // Create the needed instances in Validation process 
-        FormAnswer formAnswerToCreate = new FormAnswer();
-        List<Answer> answers = new List<Answer>();
-        List<ErrorMessage> formErrors = new List<ErrorMessage>();
+        private readonly ILoggerManager _logger;
+        private readonly IFormRepository _formRepository;
+
+        public FormService(ILoggerManager logger,
+                           IFormRepository formRepository)
+        {
+            _logger = logger;
+            _formRepository = formRepository;
+        }
+
+        public async Task<Form> GetForm(string id)
+        {
+            var fetchedForm = await _formRepository.GetForm<Form>(id);
+
+            // Check the form existence in the DB
+            if (fetchedForm == null)
+                throw new Exception("This form doesn't exist!!");
+
+            return fetchedForm;
+        }
+
+        public async Task<List<Form>> GetForms()
+        {
+            var fetchedForms = await _formRepository.GetForms<Form>();
+
+            // Check the form existence in the DB
+            if (fetchedForms == null)
+                throw new Exception("No forms exist!!");
+
+            return fetchedForms;
+        }
+
+        // Check availability of at least one question on the entire form either in questions or a specific section
+        public void IsReceivedFormValid(FormToInsertDto formToInsert)
+        {
+            bool response = false;
+
+            response = containQuestions<FormToInsertDto>(formToInsert);
+
+            if (formToInsert.Sections != null)
+            {
+                foreach (SectionToInsertDto sectionToInsert in formToInsert.Sections)
+                {
+                    response = containQuestions<SectionToInsertDto>(sectionToInsert);
+                }
+            }
+
+            if(!response)
+                throw new Exception("Incoming Form is invalid: Form must atleast have one question!!");
+        }
 
         public List<ErrorMessage> ValidateFormAnswers(ref Form form, FormAnswersDto formAnswers)
         {
@@ -40,12 +91,17 @@ namespace EForms.API.Core.Services
              *      6 - Return the List<ErrorMessages>
              */
 
-            formErrors = validateAllAnswers(form, formAnswers);
+            AnsweredForm formAnswerToCreate = new AnsweredForm();
+            List<Answer> answers = new List<Answer>();
+            List<ErrorMessage> errorMessages = new List<ErrorMessage>();
+
+            _logger.LogInfo("Validate answered form");
+            validateAllAnswers(form, formAnswers, ref answers, ref errorMessages);
 
             // If the form have a single invalid answer return the formError List to the User
-            if (formErrors.Count > 0)
-                return formErrors;
-            
+            if (errorMessages.Count > 0)
+                throw new ArgumentException("No forms exist!!");
+
             // If all given answers is valid
             // Add the user's id to the formAnswer object
             formAnswerToCreate.UserId = formAnswers.UserId;
@@ -54,33 +110,29 @@ namespace EForms.API.Core.Services
             // Add the formAnswerObject to the existed answers in the form
             form.FormAnswers.Add(formAnswerToCreate);
 
-            return formErrors;
+            return errorMessages;
         }
 
-        private List<ErrorMessage> validateAllAnswers(Form form, FormAnswersDto formAnswers)
+        private void validateAllAnswers(Form form, FormAnswersDto formAnswers, ref List<Answer> answers, ref List<ErrorMessage> errorMessages)
         {
-            List<ErrorMessage> formErrorMessages = new List<ErrorMessage>();
-
             // Loop through the revieved answers
             foreach (FormAnswerDto answerDto in formAnswers.Answers)
             {
-                Question question = GetQuestionFromDocument(form, answerDto.QuestionId);
+                Question question = getQuestionFromDocument(form, answerDto.QuestionId);
 
                 // No Restrictions THEN add the answer to the list
                 if (question.Restriction == null)
                 {
-                    addValidatedAnswer(answerDto.QuestionId, answerDto.UserAnswer);
+                    answers.Add(addValidatedAnswer(answerDto.QuestionId, answerDto.UserAnswer));
                 }
                 // There is a restriction THEN apply the validation sequence  
                 else
                 {
                     ErrorMessage errorMessage = validateAnswer(question, answerDto.UserAnswer);
                     if (errorMessage != null)
-                        formErrorMessages.Add(errorMessage);
+                        errorMessages.Add(errorMessage);
                 }
             }
-
-            return formErrorMessages;
         }
 
         // Validate each answer
@@ -109,7 +161,7 @@ namespace EForms.API.Core.Services
             return null;
         }
 
-        private void addValidatedAnswer(string questionId, string userAnswer)
+        private Answer addValidatedAnswer(string questionId, string userAnswer)
         {
             Answer answer = new Answer
             {
@@ -117,10 +169,10 @@ namespace EForms.API.Core.Services
                 UserAnswer = userAnswer
             };
 
-            answers.Add(answer);
+            return answer;
         }
 
-        private Question GetQuestionFromDocument(Form form, string questionId)
+        private Question getQuestionFromDocument(Form form, string questionId)
         {
             // If the question found in Form questions
             Question question = form.Questions.Find(x => x.InternalId == questionId);
@@ -138,6 +190,19 @@ namespace EForms.API.Core.Services
             }
 
             return question;
+        }
+
+        private bool containQuestions<T>(IContainerToCreateDto questionContainer)
+        {
+            if (questionContainer.Questions != null)
+            {
+                if (questionContainer.Questions.Count != 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

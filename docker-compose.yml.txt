@@ -1,10 +1,10 @@
-version: '4.4.4'
+version: '3.1'
 
 services:
 
   mongo:
     container_name: mongo
-    image: mongo
+    image: mongo:4.4.4
     restart: always
     volumes:
       - ${WEBAPP_STORAGE_HOME}/site:/data/db
@@ -13,13 +13,12 @@ services:
       - "27017:27017"
 
   eform.api:
-	container_name: eform.api
-	restart: always
+        restart: always
         build: 
-	    context: ./EForms.API
-	    dockerfile: Dockerfile
+            context: .
+            dockerfile: Dockerfile
         ports:
-            - "8000:80"
+            - "5000:80"
             - "44348:443"
         depends_on:
             - mongo

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace EForms.API.Infrastructure.Models
 {
-    public class FormAnswer
+    public class AnsweredForm
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string InternalId { get; set; } = ObjectId.GenerateNewId().ToString();

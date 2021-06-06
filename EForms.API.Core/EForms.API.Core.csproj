@@ -11,6 +11,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EForms.API.Infrastructure\EForms.API.Infrastructure.csproj" />
+    <ProjectReference Include="..\EForms.API.Repository\EForms.API.Repository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Contracts">
+      <HintPath>..\..\LoggerService\LoggerService\bin\Debug\netcoreapp3.1\Contracts.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

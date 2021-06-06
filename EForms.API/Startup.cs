@@ -1,21 +1,14 @@
-using EForms.API.Core.Services;
-using EForms.API.Core.Services.Interfaces;
-using EForms.API.Repository.Data.Repositories;
-using EForms.API.Repository.Data.Repositories.Interfaces;
 using EForms.API.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
+using NLog;
+using System.IO;
+using Contracts;
 
 namespace EForms.API
 {
@@ -23,6 +16,7 @@ namespace EForms.API
     {
         public Startup(IConfiguration configuration)
         {
+            LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
         }
 
@@ -38,18 +32,14 @@ namespace EForms.API
                options.ConnectionString = Configuration.GetSection("EFormDatabaseString:ConnectionString").Value;
                options.Container = Configuration.GetSection("EFormDatabaseString:Container").Value;
                options.Database = Configuration.GetSection("EFormDatabaseString:DatabaseName").Value;
-               options.IsContained = Configuration["DOTNET_RUNNIN_INCONTAINER"] != null;
+               options.IsContained = Configuration["DOTNET_RUNNING_INCONTAINER"] != null;
            });
 
-            // Repositories
-            services.AddTransient<IFormRepository, FormRepository>();
-            services.AddTransient<IQuestionRepository, QuestionRepository>();
+            // Custom Repositories and Services
+            services.AddCustomServices();
 
-            // Services
-            services.AddTransient<IContainerService, ContainerService>();
-            services.AddTransient<IFormService, FormService>();
-            services.AddTransient<ISectionService, SectionService>();
-            services.AddTransient<IQuestionService, QuestionService>();
+            // Logger
+            services.ConfigureLoggerService();
 
             services.AddCors();
 
@@ -69,6 +59,7 @@ namespace EForms.API
             }
 
             //app.UseHttpsRedirection();
+            app.UseMiddleware<ExceptionHandlerConfiguration>();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

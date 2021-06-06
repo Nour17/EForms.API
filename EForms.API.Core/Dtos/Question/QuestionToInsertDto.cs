@@ -3,6 +3,7 @@ using EForms.API.Core.Dtos.Range;
 using EForms.API.Core.Dtos.Restriction;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace EForms.API.Core.Dtos.Question
 {
@@ -11,11 +12,16 @@ namespace EForms.API.Core.Dtos.Question
         // Section Id if question is added into section
         public string SectionId { get; set; }
         // Question related data
+        [Required]
         public string Header { get; set; }
+        [Required]
         public string Description { get; set; }
+        [Required]
         public int Position { get; set; }
-        public bool IsRequired  { get; set; }
+        [Required]
+        public bool IsRequired { get; set; } = false;
         public int Genre { get; set; }
+        [Required]
         public int Type { get; set; }
         // Options Related Data
         public OptionsToAddDto Options { get; set; }

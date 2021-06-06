@@ -10,33 +10,33 @@ using EForms.API.Core.Dtos.Container;
 using EForms.API.Core.Dtos.Answer;
 using System;
 using System.ComponentModel.DataAnnotations;
+using Contracts;
 
 namespace EForms.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class FormsController : ControllerBase
-    {
+    { 
         private readonly IContainerService _containerService;
         private readonly IFormService _formService;
-        private readonly IFormRepository _formRepository;
+        private readonly ILoggerManager _logger;
 
         public FormsController(IContainerService containerService,
                                 IFormService formService,
-                                IFormRepository formRepository)
+                                ILoggerManager logger)
         {
             _containerService = containerService;
             _formService = formService;
-            _formRepository = formRepository;
+            _logger = logger;
         }
 
         [HttpPost("submit")]
         public async Task<IActionResult> CreateFullForm(FormToInsertDto formToInsertDto)
         {
-            if (formToInsertDto.Questions == null && formToInsertDto.Sections == null)
-            {
-                return BadRequest (new ValidationResult("Form must atleast have one question!!"));
-            }
+            _logger.LogInfo("Checking validity of Incoming Form");
+            _formService.IsReceivedFormValid(formToInsertDto);
+            _logger.LogInfo("Incoming Form is valid");
 
             Form formToCreate = (Form)_containerService.PopulateContainer<Form>(formToInsertDto);
 
@@ -72,50 +72,27 @@ namespace EForms.API.Controllers
             return Ok(createdForm);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateSimpleForm(IContainerToCreateDto containerToInsertDto)
-        {
-            Form formToCreate = (Form) _containerService.PopulateContainer<Form>(containerToInsertDto);
-
-            var createdForm = await _formRepository.AddForm<Form>(formToCreate);
-
-            return Ok(createdForm);
-        }
-
         [HttpGet]
         public async Task<IActionResult> ListForms()
         {
-            var forms = await _formRepository.GetForms<Form>();
+            var fetchedForms = await _formService.GetForms();
 
-            // Check the forms existence in the DB
-            if (forms == null)
-                return NotFound();
-
-            return Ok(forms);
+            return Ok(fetchedForms);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetForm(string id)
         {
-            var form = await _formRepository.GetForm<Form>(id);
+            var fetchedForm = await _formService.GetForm(id);
 
-            // Check the form existence in the DB
-            if (form == null)
-                return NotFound("This form doesn't exist!!");
-
-            return Ok(form);
+            return Ok(fetchedForm);
         }
 
         // Simple update for forms, only update Name, Description and Grid Layout.
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateForm(string id, FormToUpdateDto formToUpdateDto)
         {
-            // Get the form document / object from the DB
-            var fetchedForm = await _formRepository.GetForm<Form>(id);
-
-            // Check the form existence in the DB
-            if (fetchedForm == null)
-                return NotFound("This form doesn't exist!!");
+            var fetchedForm = await _formService.GetForm(id);
 
             _containerService.SimpleUpdateContainer<Form>(ref fetchedForm, formToUpdateDto);
 
@@ -138,11 +115,7 @@ namespace EForms.API.Controllers
         [HttpPost("{id}/answer")]
         public async Task<IActionResult> AnswerForm([FromRoute] string id, [FromBody] FormAnswersDto formAnswersDto)
         {
-            var fetchedForm = await _formRepository.GetForm<Form>(id);
-
-            // Check the form existence in the DB
-            if (fetchedForm == null)
-                return NotFound("This form doesn't exist!!");
+            var fetchedForm = await _formService.GetForm(id);
 
             // Add all user's answers on one form at once
             List<ErrorMessage> errorMessages = _formService.ValidateFormAnswers(ref fetchedForm, formAnswersDto);

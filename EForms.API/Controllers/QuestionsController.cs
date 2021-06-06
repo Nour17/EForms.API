@@ -134,7 +134,7 @@ namespace EForms.API.Controllers
             {
                 var existedAnswersInUserFormAnswers = new List<Answer>();
                 existedAnswersInUserFormAnswers.Add(answer);
-                usersAnswers = new FormAnswer
+                usersAnswers = new AnsweredForm
                 {
                     UserId = userId,
                     Answers = existedAnswersInUserFormAnswers
