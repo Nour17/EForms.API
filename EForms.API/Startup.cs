@@ -8,7 +8,7 @@ using System;
 using Microsoft.OpenApi.Models;
 using NLog;
 using System.IO;
-using Contracts;
+using ErrorHandlingService;
 
 namespace EForms.API
 {
@@ -59,7 +59,7 @@ namespace EForms.API
             }
 
             //app.UseHttpsRedirection();
-            app.UseMiddleware<ExceptionHandlerConfiguration>();
+            //app.UseMiddleware<ExceptionHandlerConfiguration>();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

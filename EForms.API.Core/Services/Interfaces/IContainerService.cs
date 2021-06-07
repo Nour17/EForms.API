@@ -9,7 +9,7 @@ namespace EForms.API.Core.Services.Interfaces
 {
     public interface IContainerService    {
         IContainerElement PopulateContainer<T>(IContainerToCreateDto containerToInsertDto);
+        IContainerElement AddListOfQuestions(IContainerElement container, List<QuestionToInsertDto> questionsToInsertDto);
         void SimpleUpdateContainer<T>(ref T oldContainer, IContainerToUpdateDto newContainer);
-        void AddListOfQuestions<T>(ref T container, List<QuestionToInsertDto> questionsToInsertDto);
     }
 }

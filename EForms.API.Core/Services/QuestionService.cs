@@ -18,18 +18,12 @@ namespace EForms.API.Core.Services
             return containerElement.Questions.FirstOrDefault(x => x.InternalId == questionId);
         }
 
-        public void InsertQuestion<T>(ref T parentElement, QuestionToInsertDto questionToInsertDto)
+        public void InsertQuestion(IContainerElement parentElement, QuestionToInsertDto questionToInsertDto)
         {
             Question questionToInsert = populateQuestion(questionToInsertDto);
 
-            // Create IContainerElement object whether it is form or section to access the Questions property
-            IContainerElement containerElement = (IContainerElement)parentElement;
-
             // Add the question to the Question list in the parent element
-            containerElement.Questions.Add(questionToInsert);
-
-            // Override the sent property with the updated IContainerElement object and cast it back to generic type
-            parentElement = (T)containerElement;
+            parentElement.Questions.Add(questionToInsert);
         }
 
         private Question populateQuestion(QuestionToInsertDto questionToInsertDto)

@@ -5,10 +5,6 @@ using EForms.API.Repository.Data.Repositories;
 using EForms.API.Repository.Data.Repositories.Interfaces;
 using LoggerService;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EForms.API
 {

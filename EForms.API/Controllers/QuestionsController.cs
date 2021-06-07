@@ -53,13 +53,13 @@ namespace EForms.API.Controllers
 
             if (questionToInsertDto.SectionId == null)
             {
-                _questionService.InsertQuestion<Form>(ref fetchedForm, questionToInsertDto);
+                _questionService.InsertQuestion(fetchedForm, questionToInsertDto);
             }
             else
             {
                 var fetchedSection = _sectionService.GetSectionFromForm(ref fetchedForm, questionToInsertDto.SectionId);
 
-                _questionService.InsertQuestion<Section>(ref fetchedSection, questionToInsertDto);
+                _questionService.InsertQuestion(fetchedSection, questionToInsertDto);
             }
 
 

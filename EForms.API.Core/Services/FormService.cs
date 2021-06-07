@@ -1,4 +1,5 @@
 ﻿using Contracts;
+using ErrorHandlingService;
 using EForms.API.Core.Dtos.Answer;
 using EForms.API.Core.Dtos.Container;
 using EForms.API.Core.Dtos.Form;
@@ -27,6 +28,17 @@ namespace EForms.API.Core.Services
             _formRepository = formRepository;
         }
 
+        public async Task<Form> AddForm(Form formToAdd)
+        {
+            // Add the form to the DB
+            var addedForm = await _formRepository.AddForm<Form>(formToAdd);
+
+            if (addedForm == null)
+                throw new Exception("Adding form to DB failed!!");
+
+            return addedForm;
+        }
+
         public async Task<Form> GetForm(string id)
         {
             var fetchedForm = await _formRepository.GetForm<Form>(id);
@@ -50,8 +62,9 @@ namespace EForms.API.Core.Services
         }
 
         // Check availability of at least one question on the entire form either in questions or a specific section
-        public void IsReceivedFormValid(FormToInsertDto formToInsert)
+        public bool IsReceivedFormValid(FormToInsertDto formToInsert)
         {
+            _logger.LogInfo("Checking validity of Incoming Form");
             bool response = false;
 
             response = containQuestions<FormToInsertDto>(formToInsert);
@@ -64,8 +77,12 @@ namespace EForms.API.Core.Services
                 }
             }
 
-            if(!response)
-                throw new Exception("Incoming Form is invalid: Form must atleast have one question!!");
+            if (!response)
+                _logger.LogError("Incoming Form is invalid");
+
+            _logger.LogInfo("Incoming Form is valid");
+
+            return response;
         }
 
         public List<ErrorMessage> ValidateFormAnswers(ref Form form, FormAnswersDto formAnswers)
@@ -100,7 +117,7 @@ namespace EForms.API.Core.Services
 
             // If the form have a single invalid answer return the formError List to the User
             if (errorMessages.Count > 0)
-                throw new ArgumentException("No forms exist!!");
+                throw new Exception("No forms exist!!");
 
             // If all given answers is valid
             // Add the user's id to the formAnswer object

@@ -11,6 +11,7 @@ using EForms.API.Core.Dtos.Answer;
 using System;
 using System.ComponentModel.DataAnnotations;
 using Contracts;
+using EForms.API.Infrastructure.Models.Interfaces;
 
 namespace EForms.API.Controllers
 {
@@ -34,15 +35,18 @@ namespace EForms.API.Controllers
         [HttpPost("submit")]
         public async Task<IActionResult> CreateFullForm(FormToInsertDto formToInsertDto)
         {
-            _logger.LogInfo("Checking validity of Incoming Form");
-            _formService.IsReceivedFormValid(formToInsertDto);
-            _logger.LogInfo("Incoming Form is valid");
+            bool isValid = _formService.IsReceivedFormValid(formToInsertDto);
+            if (!isValid)
+            {
+                return BadRequest("Incoming Form is invalid: Form must atleast have one question!!");
+            }
 
             Form formToCreate = (Form)_containerService.PopulateContainer<Form>(formToInsertDto);
 
+
             if (formToInsertDto.Questions != null)
             {
-                _containerService.AddListOfQuestions<Form>(ref formToCreate, formToInsertDto.Questions);
+                _containerService.AddListOfQuestions(formToCreate, formToInsertDto.Questions);
             }
 
             // List of sections to hold the newly created sections from the request
@@ -55,7 +59,7 @@ namespace EForms.API.Controllers
                 {
                     Section sectionToCreate = (Section)_containerService.PopulateContainer<Section>(sectionToInsertDto);
 
-                    _containerService.AddListOfQuestions<Section>(ref sectionToCreate, sectionToInsertDto.Questions);
+                    _containerService.AddListOfQuestions(sectionToCreate, sectionToInsertDto.Questions);
 
                     // Add the newly created section to the sectionsToBeAdded list
                     sectionsToBeAdded.Add(sectionToCreate);
@@ -67,7 +71,7 @@ namespace EForms.API.Controllers
             formToCreate.Sections = sectionsToBeAdded;
 
             // Add the form to the DB
-            var createdForm = await _formRepository.AddForm<Form>(formToCreate);
+            var createdForm = await _formService.AddForm(formToCreate);
 
             return Ok(createdForm);
         }
@@ -96,38 +100,39 @@ namespace EForms.API.Controllers
 
             _containerService.SimpleUpdateContainer<Form>(ref fetchedForm, formToUpdateDto);
 
-            var updatedForm = await _formRepository.UpdateForm<Form>(id, fetchedForm);
+           // var updatedForm = await _formRepository.UpdateForm<Form>(id, fetchedForm);
 
-            return Ok(updatedForm);
+            //return Ok(updatedForm);
+            return Ok(fetchedForm);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteForm(string id)
-        {
-            var result = await _formRepository.RemoveForm<Form>(id);
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteForm(string id)
+        //{
+        //    var result = await _formRepository.RemoveForm<Form>(id);
 
-            if (!result)
-                return NotFound("This form doesn't exist!!");
+        //    if (!result)
+        //        return NotFound("This form doesn't exist!!");
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
 
-        [HttpPost("{id}/answer")]
-        public async Task<IActionResult> AnswerForm([FromRoute] string id, [FromBody] FormAnswersDto formAnswersDto)
-        {
-            var fetchedForm = await _formService.GetForm(id);
+        //[HttpPost("{id}/answer")]
+        //public async Task<IActionResult> AnswerForm([FromRoute] string id, [FromBody] FormAnswersDto formAnswersDto)
+        //{
+        //    var fetchedForm = await _formService.GetForm(id);
 
-            // Add all user's answers on one form at once
-            List<ErrorMessage> errorMessages = _formService.ValidateFormAnswers(ref fetchedForm, formAnswersDto);
+        //    // Add all user's answers on one form at once
+        //    List<ErrorMessage> errorMessages = _formService.ValidateFormAnswers(ref fetchedForm, formAnswersDto);
 
-            if (errorMessages.Count == 0 )
-            {
-                var updatedForm = await _formRepository.UpdateForm<Form>(id, fetchedForm);
+        //    if (errorMessages.Count == 0 )
+        //    {
+        //        var updatedForm = await _formRepository.UpdateForm<Form>(id, fetchedForm);
 
-                return Ok(updatedForm);
-            }
+        //        return Ok(updatedForm);
+        //    }
 
-            return Ok(errorMessages);
-        }
+        //    return Ok(errorMessages);
+        //}
     }
 }

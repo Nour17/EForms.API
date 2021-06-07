@@ -21,8 +21,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
     <PackageReference Include="MongoDB.Bson" Version="2.12.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.12.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog" Version="4.7.10" />
+    <PackageReference Include="ServiceStack" Version="5.11.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.1.0" />
@@ -37,6 +38,9 @@
   <ItemGroup>
     <Reference Include="Contracts">
       <HintPath>..\..\LoggerService\LoggerService\bin\Debug\netcoreapp3.1\Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="ErrorHandlingService">
+      <HintPath>..\..\LoggerService\ErrorHandlingService\bin\Debug\netcoreapp3.1\ErrorHandlingService.dll</HintPath>
     </Reference>
     <Reference Include="LoggerService">
       <HintPath>..\..\LoggerService\LoggerService\bin\Debug\netcoreapp3.1\LoggerService.dll</HintPath>
