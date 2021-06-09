@@ -21,58 +21,32 @@ namespace EForms.API.Core.Services
             _logger = logger;
         }
 
-        public IContainerElement PopulateContainer<T>(IContainerToCreateDto containerToInsertDto)
+        public IContainerElement CreateContainer<T>(IContainerToCreateDto containerToInsertDto)
         {
+            IContainerElement container = null;
             try
             {
-                IContainerElement container = null;
+                // Create the container object ( Form, Section ), if problem occurred a NullReferenceException is thrown
+                container = initializeContainerInstance<T>();
 
-                // Check for the passed generic class whether it is form or section
-                Type containerType = typeof(T);
-                if (containerType == typeof(Form))
-                {
-                    container = new Form();
-                }
-                else if (containerType == typeof(Section))
-                {
-                    container = new Section();
-                }
+                // Populate the container object ( Form, Section ) with basic information, if problem occurred a ArgumentException is thrown
+                container = populateContainerWithBasicInfo(container, containerToInsertDto);
 
-                _logger.LogInfo($"Populating {containerType.Name} with basic data");
-
-                // Create new Container object with the incoming properties from the request payload
-                container.Header = containerToInsertDto.Header;
-                container.Description = containerToInsertDto.Description;
-                container.Position = containerToInsertDto.Position;
-                container.ColumnRepresentation = containerToInsertDto.ColumnRepresentation;
+                if (containerToInsertDto.Questions != null)
+                    container = addListOfQuestionsIntoContainer(container, containerToInsertDto.Questions);
 
                 return container;
             } catch (Exception ex)
             {
-                _logger.LogError($"Populating Failed because of {ex}");
-                throw new Exception($"Populating Failed because of {ex.Message}");
-            }
-            
-        }
-        public IContainerElement AddListOfQuestions(IContainerElement container, List<QuestionToInsertDto> questionsToInsertDto)
-        {
-            try
-            {
-                _logger.LogInfo($"Adding list of question into {container.GetType().Name}");
-
-                // Loop through the Questions in the incoming request
-                foreach (QuestionToInsertDto questionToInsertDto in questionsToInsertDto)
+                string errorMessage = $"Problem while creating container process \n{ex.Message}";
+                var innerException = ex.InnerException;
+                while (innerException != null)
                 {
-                    // Add each question individualy into the form
-                    var question = _questionService.InsertQuestion(container, questionToInsertDto);
+                    errorMessage += "\n" + innerException.Message;
+                    innerException = innerException.InnerException;
                 }
-
-                return container;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Adding questions Failed because of {ex}");
-                throw new Exception($"Adding questions Failed because of {ex.Message}");
+                _logger.LogError(errorMessage + "\n" + ex.StackTrace);
+                throw new Exception(errorMessage);
             }
         }
         public void SimpleUpdateContainer<T>(ref T oldContainer, IContainerToUpdateDto newContainer)
@@ -92,6 +66,78 @@ namespace EForms.API.Core.Services
 
             // Override the sent property with the updated IContainerElement object and cast it back to generic type
             oldContainer = (T)containerElement;
+        }
+        private IContainerElement initializeContainerInstance<T>()
+        {
+            _logger.LogInfo("Attempt to initialize new container");
+            try
+            {
+                IContainerElement container = null;
+
+                // Check for the passed generic class whether it is form or section
+                Type containerType = typeof(T);
+                _logger.LogInfo($"Initialize new container of type: {containerType}");
+                if (containerType == typeof(Form))
+                {
+                    container = new Form();
+                }
+                else if (containerType == typeof(Section))
+                {
+                    container = new Section();
+                } else
+                {
+                    throw new InvalidCastException("Problem while detecting container type: Not form or section");
+                }
+
+                return container;
+            }
+            catch (InvalidCastException ex)
+            {
+                throw new NullReferenceException($"Could not initialize a new container", ex);
+            }
+        }
+        private IContainerElement populateContainerWithBasicInfo(IContainerElement container, IContainerToCreateDto containerToInsertDto)
+        {
+            _logger.LogInfo($"Populating {container.GetType().Name} with basic data");
+
+            try
+            {
+                // Create new Container object with the incoming properties from the request payload
+                container.Header = containerToInsertDto.Header;
+                container.Description = containerToInsertDto.Description;
+                container.Position = containerToInsertDto.Position;
+                container.ColumnRepresentation = containerToInsertDto.ColumnRepresentation;
+
+                return container;
+            } catch (Exception ex)
+            {
+                throw new ArgumentException($"Could not populate the new container: {ex.Message}", ex);
+            }
+        }
+        private IContainerElement addListOfQuestionsIntoContainer(IContainerElement container, List<QuestionToInsertDto> questionsToInsertDto)
+        {
+            List<Question> questionsToBeAdded = new List<Question>();
+
+            try
+            {
+                _logger.LogInfo($"Adding list of question into {container.GetType().Name}");
+
+                // Loop through the Questions from the incoming request
+                foreach (QuestionToInsertDto questionToInsertDto in questionsToInsertDto)
+                {
+                    // Add each question individualy into the form
+                    questionsToBeAdded.Add(_questionService.CreateQuestion(questionToInsertDto));
+                }
+
+                // Assign the list of created questions to the parent container element
+                container.Questions = questionsToBeAdded;
+
+                return container;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Adding questions Failed because of {ex.Message}", ex);
+            }
         }
     }
 }

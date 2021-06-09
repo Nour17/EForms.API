@@ -19,7 +19,7 @@ namespace EForms.API.Core.Services
     public class FormService : IFormService
     {
         private readonly ILoggerManager _logger;
-        private readonly IFormRepository _formRepository;
+        private readonly IFormRepository _formRepository;       
 
         public FormService(ILoggerManager logger,
                            IFormRepository formRepository)
@@ -38,7 +38,6 @@ namespace EForms.API.Core.Services
 
             return addedForm;
         }
-
         public async Task<Form> GetForm(string id)
         {
             var fetchedForm = await _formRepository.GetForm<Form>(id);
@@ -49,7 +48,6 @@ namespace EForms.API.Core.Services
 
             return fetchedForm;
         }
-
         public async Task<List<Form>> GetForms()
         {
             var fetchedForms = await _formRepository.GetForms<Form>();
@@ -60,15 +58,16 @@ namespace EForms.API.Core.Services
 
             return fetchedForms;
         }
-
         // Check availability of at least one question on the entire form either in questions or a specific section
         public bool IsReceivedFormValid(FormToInsertDto formToInsert)
         {
             _logger.LogInfo("Checking validity of Incoming Form");
             bool response = false;
 
+            // Check if form have any questions
             response = containQuestions<FormToInsertDto>(formToInsert);
 
+            // Check if form's sections have any questions in atleast one of them
             if (formToInsert.Sections != null)
             {
                 foreach (SectionToInsertDto sectionToInsert in formToInsert.Sections)
@@ -79,12 +78,11 @@ namespace EForms.API.Core.Services
 
             if (!response)
                 _logger.LogError("Incoming Form is invalid");
-
-            _logger.LogInfo("Incoming Form is valid");
+            else
+                _logger.LogInfo("Incoming Form is valid");
 
             return response;
         }
-
         public List<ErrorMessage> ValidateFormAnswers(ref Form form, FormAnswersDto formAnswers)
         {
             /*
@@ -129,7 +127,6 @@ namespace EForms.API.Core.Services
 
             return errorMessages;
         }
-
         private void validateAllAnswers(Form form, FormAnswersDto formAnswers, ref List<Answer> answers, ref List<ErrorMessage> errorMessages)
         {
             // Loop through the revieved answers
@@ -151,7 +148,6 @@ namespace EForms.API.Core.Services
                 }
             }
         }
-
         // Validate each answer
         private ErrorMessage validateAnswer(Question question, string userAnswer)
         {
@@ -177,7 +173,6 @@ namespace EForms.API.Core.Services
 
             return null;
         }
-
         private Answer addValidatedAnswer(string questionId, string userAnswer)
         {
             Answer answer = new Answer
@@ -188,7 +183,6 @@ namespace EForms.API.Core.Services
 
             return answer;
         }
-
         private Question getQuestionFromDocument(Form form, string questionId)
         {
             // If the question found in Form questions
@@ -208,7 +202,6 @@ namespace EForms.API.Core.Services
 
             return question;
         }
-
         private bool containQuestions<T>(IContainerToCreateDto questionContainer)
         {
             if (questionContainer.Questions != null)

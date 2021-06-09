@@ -6,7 +6,7 @@ namespace EForms.API.Core.Services.Interfaces
 {
     public interface IQuestionService
     {
-        void InsertQuestion(IContainerElement parentElement, QuestionToInsertDto questionToInsertDto);
+        Question CreateQuestion(QuestionToInsertDto questionToInsertDto);
         Question GetQuestion<T>(T parentElement, string questionId);
     }
 }

@@ -8,8 +8,7 @@ using System.Text;
 namespace EForms.API.Core.Services.Interfaces
 {
     public interface IContainerService    {
-        IContainerElement PopulateContainer<T>(IContainerToCreateDto containerToInsertDto);
-        IContainerElement AddListOfQuestions(IContainerElement container, List<QuestionToInsertDto> questionsToInsertDto);
+        IContainerElement CreateContainer<T>(IContainerToCreateDto containerToInsertDto);
         void SimpleUpdateContainer<T>(ref T oldContainer, IContainerToUpdateDto newContainer);
     }
 }

@@ -38,9 +38,9 @@ namespace EForms.API.Infrastructure.Models
         public bool IsRequired { get; set; } = false;
         public QuestionGenre Genre { get; set; }
         public QuestionType Type { get; set; }
-        public Options Options { get; set; }
-        public Range Range { get; set; }
-        public Restriction Restriction { get; set; }
+        public Options Options { get; set; } = null;
+        public Range Range { get; set; } = null;
+        public Restriction Restriction { get; set; } = null;
         [BsonDateTimeOptions]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [BsonDateTimeOptions]

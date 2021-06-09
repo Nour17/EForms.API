@@ -14,7 +14,6 @@ namespace EForms.API.Core.Dtos.Question
         // Question related data
         [Required]
         public string Header { get; set; }
-        [Required]
         public string Description { get; set; }
         [Required]
         public int Position { get; set; }

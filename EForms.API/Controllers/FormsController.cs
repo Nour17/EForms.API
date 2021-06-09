@@ -33,47 +33,45 @@ namespace EForms.API.Controllers
         }
 
         [HttpPost("submit")]
-        public async Task<IActionResult> CreateFullForm(FormToInsertDto formToInsertDto)
+        public async Task<IActionResult> CreateForm(FormToInsertDto formToInsertDto)
         {
+            // Check availability of at least one question on the entire form either in questions or a specific section
             bool isValid = _formService.IsReceivedFormValid(formToInsertDto);
             if (!isValid)
             {
                 return BadRequest("Incoming Form is invalid: Form must atleast have one question!!");
             }
 
-            Form formToCreate = (Form)_containerService.PopulateContainer<Form>(formToInsertDto);
-
-
-            if (formToInsertDto.Questions != null)
+            try
             {
-                _containerService.AddListOfQuestions(formToCreate, formToInsertDto.Questions);
-            }
+                Form formToCreate = (Form)_containerService.CreateContainer<Form>(formToInsertDto);
 
-            // List of sections to hold the newly created sections from the request
-            var sectionsToBeAdded = new List<Section>();
+                // List of sections to hold the newly created sections from the request
+                var sectionsToBeAdded = new List<Section>();
 
-            if (formToInsertDto.Sections != null)
-            {
-                // Loop through the Sections in the incoming request
-                foreach (SectionToInsertDto sectionToInsertDto in formToInsertDto.Sections)
+                if (formToInsertDto.Sections != null)
                 {
-                    Section sectionToCreate = (Section)_containerService.PopulateContainer<Section>(sectionToInsertDto);
+                    // Loop through the Sections in the incoming request
+                    foreach (SectionToInsertDto sectionToInsertDto in formToInsertDto.Sections)
+                    {
+                        Section sectionToCreate = (Section)_containerService.CreateContainer<Section>(sectionToInsertDto);
 
-                    _containerService.AddListOfQuestions(sectionToCreate, sectionToInsertDto.Questions);
-
-                    // Add the newly created section to the sectionsToBeAdded list
-                    sectionsToBeAdded.Add(sectionToCreate);
+                        // Add the newly created section to the sectionsToBeAdded list
+                        sectionsToBeAdded.Add(sectionToCreate);
+                    }
                 }
+
+                // Copy the sectionsToBeAdded list to the newly created form
+                formToCreate.Sections = sectionsToBeAdded;
+
+                // Add the form to the DB
+                var createdForm = await _formService.AddForm(formToCreate);
+
+                return Ok(createdForm);
+            } catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
- 
-
-            // Copy the sectionsToBeAdded list to the newly created form
-            formToCreate.Sections = sectionsToBeAdded;
-
-            // Add the form to the DB
-            var createdForm = await _formService.AddForm(formToCreate);
-
-            return Ok(createdForm);
         }
 
         [HttpGet]
@@ -125,7 +123,7 @@ namespace EForms.API.Controllers
         //    // Add all user's answers on one form at once
         //    List<ErrorMessage> errorMessages = _formService.ValidateFormAnswers(ref fetchedForm, formAnswersDto);
 
-        //    if (errorMessages.Count == 0 )
+        //    if (errorMessages.Count == 0)
         //    {
         //        var updatedForm = await _formRepository.UpdateForm<Form>(id, fetchedForm);
 

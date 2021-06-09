@@ -1,6 +1,8 @@
-﻿using EForms.API.Infrastructure.Models.Interfaces;
+﻿
+using EForms.API.Infrastructure.Models.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 using System;
 using System.Collections.Generic;
 
@@ -8,11 +10,13 @@ namespace EForms.API.Infrastructure.Models
 {
     public class Section : IContainerElement
     {
+        [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string InternalId { get; set; } = ObjectId.GenerateNewId().ToString();
+        [BsonIgnoreIfDefault]
+        public string InternalId { get; set; }
         public string Header { get; set; }
         public string Description { get; set; }
-        public int Position { get; set; }
+        public int Position { get; set; } = 0;
         public int ColumnRepresentation { get; set; } = 1;
         public List<Question> Questions { get; set; } = new List<Question>();
         [BsonDateTimeOptions]
