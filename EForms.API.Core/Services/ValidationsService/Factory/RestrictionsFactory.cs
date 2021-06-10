@@ -9,8 +9,7 @@ namespace EForms.API.Core.Services.RestrictionsServices.Factory
 {
     public static class RestrictionsFactory
     {
-        public static bool ApplyRestriction(Restriction restriction, 
-                                            string userAnswer)
+        public static bool ApplyRestriction(Restriction restriction, string userAnswer)
         {
             // Create new instance based on the restriction type
             var restrictionObject = CreateRestriction(restriction);

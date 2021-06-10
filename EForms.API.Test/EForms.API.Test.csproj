@@ -16,4 +16,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EForms.API.Core\EForms.API.Core.csproj" />
+  </ItemGroup>
+
 </Project>

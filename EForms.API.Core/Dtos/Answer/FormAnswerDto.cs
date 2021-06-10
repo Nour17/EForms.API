@@ -10,6 +10,6 @@ namespace EForms.API.Core.Dtos.Answer
         [Required]
         public string QuestionId { get; set; }
         [Required]
-        public string UserAnswer { get; set; }
+        public string Answer { get; set; }
     }
 }

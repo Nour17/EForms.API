@@ -9,8 +9,6 @@ namespace EForms.API.Core.Dtos.Question
 {
     public class QuestionToInsertDto
     {
-        // Section Id if question is added into section
-        public string SectionId { get; set; }
         // Question related data
         [Required]
         public string Header { get; set; }

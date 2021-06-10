@@ -12,8 +12,9 @@ namespace EForms.API.Core.Services.Interfaces
     {
         Task<Form> AddForm(Form formToAdd);
         Task<Form> GetForm(string id);
+        Task<bool> UpdateForm(string id, Form updatedForm);
         Task<List<Form>> GetForms();
-        List<ErrorMessage> ValidateFormAnswers(ref Form form, FormAnswersDto formAnswers);
+        Form ValidateFormAnswers(Form form, FormAnswersDto formAnswers);
         bool IsReceivedFormValid(FormToInsertDto formToInsert);
     }
 }

@@ -1,13 +1,12 @@
 ﻿using Contracts;
-using ErrorHandlingService;
 using EForms.API.Core.Dtos.Answer;
 using EForms.API.Core.Dtos.Container;
 using EForms.API.Core.Dtos.Form;
-using EForms.API.Core.Dtos.Question;
 using EForms.API.Core.Dtos.Section;
 using EForms.API.Core.Services.Interfaces;
 using EForms.API.Core.Services.RestrictionsServices.Factory;
 using EForms.API.Infrastructure.Models;
+using EForms.API.Infrastructure.Models.Interfaces;
 using EForms.API.Repository.Data.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -48,6 +47,12 @@ namespace EForms.API.Core.Services
 
             return fetchedForm;
         }
+        public async Task<bool> UpdateForm(string id, Form updatedForm)
+        {
+            var form = await _formRepository.UpdateForm<Form>(id, updatedForm);
+
+            return form;
+        }
         public async Task<List<Form>> GetForms()
         {
             var fetchedForms = await _formRepository.GetForms<Form>();
@@ -62,28 +67,31 @@ namespace EForms.API.Core.Services
         public bool IsReceivedFormValid(FormToInsertDto formToInsert)
         {
             _logger.LogInfo("Checking validity of Incoming Form");
-            bool response = false;
 
             // Check if form have any questions
-            response = containQuestions<FormToInsertDto>(formToInsert);
+            if (containQuestions<FormToInsertDto>(formToInsert))
+            {
+                _logger.LogInfo("Incoming Form is valid");
+                return true;
+            }
 
             // Check if form's sections have any questions in atleast one of them
             if (formToInsert.Sections != null)
             {
                 foreach (SectionToInsertDto sectionToInsert in formToInsert.Sections)
                 {
-                    response = containQuestions<SectionToInsertDto>(sectionToInsert);
+                    if (containQuestions<SectionToInsertDto>(sectionToInsert))
+                    {
+                        _logger.LogInfo("Incoming Form is valid");
+                        return true;
+                    }
                 }
             }
 
-            if (!response)
-                _logger.LogError("Incoming Form is invalid");
-            else
-                _logger.LogInfo("Incoming Form is valid");
-
-            return response;
+            _logger.LogError("Incoming Form is invalid");
+            return false;
         }
-        public List<ErrorMessage> ValidateFormAnswers(ref Form form, FormAnswersDto formAnswers)
+        public Form ValidateFormAnswers(Form form, FormAnswersDto formAnswers)
         {
             /*
              * Answering a form process
@@ -107,81 +115,96 @@ namespace EForms.API.Core.Services
              */
 
             AnsweredForm formAnswerToCreate = new AnsweredForm();
-            List<Answer> answers = new List<Answer>();
-            List<ErrorMessage> errorMessages = new List<ErrorMessage>();
 
-            _logger.LogInfo("Validate answered form");
-            validateAllAnswers(form, formAnswers, ref answers, ref errorMessages);
+            try
+            {
+                List<Answer> answers = insertAnswersCasually(form, formAnswers);
+                // If all given answers is valid
+                // Add the user's id to the formAnswer object
+                formAnswerToCreate.UserId = formAnswers.UserId;
+                // Add the user's answers to the formAnswer object
+                formAnswerToCreate.Answers = answers;
+                // Add the formAnswerObject to the existed answers in the form
+                form.FormAnswers.Add(formAnswerToCreate);
 
-            // If the form have a single invalid answer return the formError List to the User
-            if (errorMessages.Count > 0)
-                throw new Exception("No forms exist!!");
+                return form;
+            } catch (Exception)
+            {
+                // If the form have a single invalid answer return the formError List to the User
+                _logger.LogInfo("Validate answered form");
+                List<ErrorMessage> errorMessages = catchInvalidAnswer(form, formAnswers);
+                string x = "";
+                foreach(ErrorMessage errorMessage in errorMessages)
+                {
+                    x += $"{errorMessage.QuestionId}: {errorMessage.Content}"; 
+                }
+                throw new Exception(x);
 
-            // If all given answers is valid
-            // Add the user's id to the formAnswer object
-            formAnswerToCreate.UserId = formAnswers.UserId;
-            // Add the user's answers to the formAnswer object
-            formAnswerToCreate.Answers = answers;
-            // Add the formAnswerObject to the existed answers in the form
-            form.FormAnswers.Add(formAnswerToCreate);
-
-            return errorMessages;
+                //throw new Exception(string.Join(", ", errorMessages));
+            }
         }
-        private void validateAllAnswers(Form form, FormAnswersDto formAnswers, ref List<Answer> answers, ref List<ErrorMessage> errorMessages)
+        // Add questions' answers and whenever an invalid answer exist halt (throw exception) and proceed with collecting all the wrong answers25525  
+        private List<Answer> insertAnswersCasually(Form form, FormAnswersDto formAnswers)
         {
-            // Loop through the revieved answers
+            List<Answer> answers = new List<Answer>();
+
             foreach (FormAnswerDto answerDto in formAnswers.Answers)
             {
                 Question question = getQuestionFromDocument(form, answerDto.QuestionId);
 
-                // No Restrictions THEN add the answer to the list
-                if (question.Restriction == null)
-                {
-                    answers.Add(addValidatedAnswer(answerDto.QuestionId, answerDto.UserAnswer));
-                }
-                // There is a restriction THEN apply the validation sequence  
+                if (question.Restriction == null || isAnswerValid(question, answerDto.Answer))
+                    answers.Add(createAnswer(answerDto.QuestionId, answerDto.Answer));
                 else
+                    throw new ArgumentException();
+            }
+
+            return answers;
+        }
+        private List<ErrorMessage> catchInvalidAnswer(Form form, FormAnswersDto formAnswers)
+        {
+            List<ErrorMessage> errorMessages = new List<ErrorMessage>();
+
+            foreach (FormAnswerDto answerDto in formAnswers.Answers)
+            {
+                Question question = getQuestionFromDocument(form, answerDto.QuestionId);
+
+                if (question.Restriction != null && !isAnswerValid(question, answerDto.Answer))
+                    errorMessages.Add(createErrorMessage(answerDto.QuestionId, question.Restriction.CustomErrorMessage));
+            }
+
+            return errorMessages;
+        }
+        private bool isAnswerValid(Question question, string userAnswer)
+        {
+            return RestrictionsFactory.ApplyRestriction(question.Restriction, userAnswer);
+        }
+        private Answer createAnswer(string questionId, string userAnswer)
+        {
+            try
+            {
+                return new Answer
                 {
-                    ErrorMessage errorMessage = validateAnswer(question, answerDto.UserAnswer);
-                    if (errorMessage != null)
-                        errorMessages.Add(errorMessage);
-                }
+                    QuestionId = questionId,
+                    Content = userAnswer
+                };
+            } catch(Exception ex)
+            {
+                throw new System.ArgumentException($"Could not populate the new answer for question {questionId}: {ex.Message}", ex);
             }
         }
-        // Validate each answer
-        private ErrorMessage validateAnswer(Question question, string userAnswer)
+        private ErrorMessage createErrorMessage(string questionId, string errorMessage)
         {
-            // Create Form errors model 
-            ErrorMessage errorMessage = new ErrorMessage();
-
-            // The RestrictionsFactory will Map to the appropriate logic based on the Question Restriction
-            bool isAcceptable = RestrictionsFactory.ApplyRestriction(question.Restriction, userAnswer);
-
-            // The Answer is VALID THEN add the answer to the list
-            if (isAcceptable)
+            try
             {
-                addValidatedAnswer(question.InternalId, userAnswer);
+                return new ErrorMessage
+                {
+                    QuestionId = questionId,
+                    Content = errorMessage
+                };
+            } catch(Exception ex)
+            {
+                throw new System.ArgumentException($"Could not populate the new error message for question {questionId}: {ex.Message}", ex);
             }
-            // The Answer is INVALID THEN make an error message and add it to the List<ErrorMessages>
-            else
-            {
-                // Populate the errorMessage
-                errorMessage.QuestionId = question.InternalId;
-                errorMessage.Message = question.Restriction.CustomErrorMessage;
-                return errorMessage;
-            }
-
-            return null;
-        }
-        private Answer addValidatedAnswer(string questionId, string userAnswer)
-        {
-            Answer answer = new Answer
-            {
-                QuestionId = questionId,
-                UserAnswer = userAnswer
-            };
-
-            return answer;
         }
         private Question getQuestionFromDocument(Form form, string questionId)
         {

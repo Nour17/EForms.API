@@ -10,10 +10,8 @@ namespace EForms.API.Infrastructure.Models
 {
     public class Section : IContainerElement
     {
-        [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
         [BsonRepresentation(BsonType.ObjectId)]
-        [BsonIgnoreIfDefault]
-        public string InternalId { get; set; }
+        public string InternalId { get; set; } = ObjectId.GenerateNewId().ToString();
         public string Header { get; set; }
         public string Description { get; set; }
         public int Position { get; set; } = 0;

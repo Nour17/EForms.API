@@ -1,17 +1,12 @@
 ﻿using EForms.API.Core.Dtos.Form;
-using EForms.API.Repository.Data.Repositories.Interfaces;
 using EForms.API.Infrastructure.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using EForms.API.Core.Services.Interfaces;
 using EForms.API.Core.Dtos.Section;
 using System.Collections.Generic;
-using EForms.API.Core.Dtos.Container;
-using EForms.API.Core.Dtos.Answer;
 using System;
-using System.ComponentModel.DataAnnotations;
 using Contracts;
-using EForms.API.Infrastructure.Models.Interfaces;
 
 namespace EForms.API.Controllers
 {
@@ -104,33 +99,22 @@ namespace EForms.API.Controllers
             return Ok(fetchedForm);
         }
 
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteForm(string id)
-        //{
-        //    var result = await _formRepository.RemoveForm<Form>(id);
+        [HttpPost("{id}/answer")]
+        public async Task<IActionResult> AnswerForm([FromRoute] string id, [FromBody] FormAnswersDto formAnswersDto)
+        {
+            var fetchedForm = await _formService.GetForm(id);
 
-        //    if (!result)
-        //        return NotFound("This form doesn't exist!!");
+            try
+            {
+                // Add all user's answers on one form at once
+                Form formWithAnswers = _formService.ValidateFormAnswers(fetchedForm, formAnswersDto);
+                var isFormUpdated = await _formService.UpdateForm(id, fetchedForm);
 
-        //    return Ok(result);
-        //}
-
-        //[HttpPost("{id}/answer")]
-        //public async Task<IActionResult> AnswerForm([FromRoute] string id, [FromBody] FormAnswersDto formAnswersDto)
-        //{
-        //    var fetchedForm = await _formService.GetForm(id);
-
-        //    // Add all user's answers on one form at once
-        //    List<ErrorMessage> errorMessages = _formService.ValidateFormAnswers(ref fetchedForm, formAnswersDto);
-
-        //    if (errorMessages.Count == 0)
-        //    {
-        //        var updatedForm = await _formRepository.UpdateForm<Form>(id, fetchedForm);
-
-        //        return Ok(updatedForm);
-        //    }
-
-        //    return Ok(errorMessages);
-        //}
+                return Ok(isFormUpdated);
+            } catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
