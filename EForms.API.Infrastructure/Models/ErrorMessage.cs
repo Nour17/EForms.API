@@ -5,7 +5,7 @@ using System.Text;
 
 namespace EForms.API.Infrastructure.Models
 {
-    public class ErrorMessage : IAnsweredFormResponse
+    public class ErrorMessage
     {
         public string QuestionId { get; set; }
         public string Content { get; set; }

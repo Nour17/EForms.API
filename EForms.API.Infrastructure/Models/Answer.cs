@@ -5,7 +5,7 @@ using System;
 
 namespace EForms.API.Infrastructure.Models
 {
-    public class Answer : IAnsweredFormResponse
+    public class Answer
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string QuestionId { get; set; }

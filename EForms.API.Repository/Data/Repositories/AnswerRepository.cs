@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace EForms.API.Repository.Data.Repositories
 {
-    public class QuestionRepository : IQuestionRepository
+    public class AnswerRepository : IAnswerRepository
     {
         private readonly DataContext _context;
         private readonly IMongoCollection<Question> _question;
 
-        public QuestionRepository(IOptions<DbSettings> settings)
+        public AnswerRepository(IOptions<DbSettings> settings)
         {
             _context = new DataContext(settings);
             _question = _context.database.GetCollection<Question>("Questions");

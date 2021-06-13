@@ -14,7 +14,7 @@ namespace EForms.API
         {
             // Repositories
             services.AddTransient<IFormRepository, FormRepository>();
-            services.AddTransient<IQuestionRepository, QuestionRepository>();
+            services.AddTransient<IAnswerRepository, AnswerRepository>();
 
             // Services
             services.AddTransient<IContainerService, ContainerService>();

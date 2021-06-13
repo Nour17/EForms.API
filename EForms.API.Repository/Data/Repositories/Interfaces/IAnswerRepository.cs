@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace EForms.API.Repository.Data.Repositories.Interfaces
 {
-    public interface IQuestionRepository
+    public interface IAnswerRepository
     {
         Task<List<Question>> GetQuestions<T>();
         Task<Question> GetQuestion<T>(string id);
