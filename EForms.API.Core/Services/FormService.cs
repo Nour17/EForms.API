@@ -1,16 +1,13 @@
-﻿using Contracts;
+﻿using AutoMapper;
+using Contracts;
 using EForms.API.Core.Dtos.Answer;
-using EForms.API.Core.Dtos.Container;
 using EForms.API.Core.Dtos.Form;
-using EForms.API.Core.Dtos.Section;
 using EForms.API.Core.Services.Interfaces;
 using EForms.API.Core.Services.RestrictionsServices.Factory;
 using EForms.API.Infrastructure.Models;
-using EForms.API.Infrastructure.Models.Interfaces;
 using EForms.API.Repository.Data.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EForms.API.Core.Services
@@ -18,19 +15,24 @@ namespace EForms.API.Core.Services
     public class FormService : IFormService
     {
         private readonly ILoggerManager _logger;
-        private readonly IFormRepository _formRepository;       
+        private readonly IFormRepository _formRepository;
+        private readonly IMapper _mapper;
 
         public FormService(ILoggerManager logger,
-                           IFormRepository formRepository)
+                           IFormRepository formRepository,
+                           IMapper mapper)
         {
             _logger = logger;
             _formRepository = formRepository;
+            _mapper = mapper;
         }
 
-        public async Task<Form> AddForm(Form formToAdd)
+        public async Task<Form> AddForm(Models.Form formToAdd)
         {
+            var infrastructureFormToAdd = _mapper.Map<Form>(formToAdd);
+
             // Add the form to the DB
-            var addedForm = await _formRepository.AddForm<Form>(formToAdd);
+            var addedForm = await _formRepository.AddForm<Form>(infrastructureFormToAdd);
 
             if (addedForm == null)
                 throw new Exception("Adding form to DB failed!!");
@@ -64,12 +66,12 @@ namespace EForms.API.Core.Services
             return fetchedForms;
         }
         // Check availability of at least one question on the entire form either in questions or a specific section
-        public bool IsReceivedFormValid(FormToInsertDto formToInsert)
+        public bool IsReceivedFormValid(Models.Form formToInsert)
         {
             _logger.LogInfo("Checking validity of Incoming Form");
 
             // Check if form have any questions
-            if (containQuestions<FormToInsertDto>(formToInsert))
+            if (containQuestions<Models.Form>(formToInsert))
             {
                 _logger.LogInfo("Incoming Form is valid");
                 return true;
@@ -78,9 +80,9 @@ namespace EForms.API.Core.Services
             // Check if form's sections have any questions in atleast one of them
             if (formToInsert.Sections != null)
             {
-                foreach (SectionToInsertDto sectionToInsert in formToInsert.Sections)
+                foreach (Models.Section sectionToInsert in formToInsert.Sections)
                 {
-                    if (containQuestions<SectionToInsertDto>(sectionToInsert))
+                    if (containQuestions<Models.Section>(sectionToInsert))
                     {
                         _logger.LogInfo("Incoming Form is valid");
                         return true;
@@ -225,7 +227,7 @@ namespace EForms.API.Core.Services
 
             return question;
         }
-        private bool containQuestions<T>(IContainerToCreateDto questionContainer)
+        private bool containQuestions<T>(Models.Interfaces.IContainerElement questionContainer)
         {
             if (questionContainer.Questions != null)
             {

@@ -1,11 +1,11 @@
-﻿using EForms.API.Infrastructure.Models.Interfaces;
+﻿using EForms.API.Core.Models.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
 using System;
 using System.Collections.Generic;
 
-namespace EForms.API.Infrastructure.Models
+namespace EForms.API.Core.Models
 {
     public class Form : IContainerElement
     {
@@ -16,7 +16,7 @@ namespace EForms.API.Infrastructure.Models
         public string Header { get; set; }
         public string Description { get; set; }
         public int Position { get; set; } = 0;
-        public int ColumnRepresentation { get; set; }
+        public int ColumnRepresentation { get; set; } = 1;
         public List<Section> Sections { get; set; } = new List<Section>();
         public List<Question> Questions { get; set; } = new List<Question>();
         // UserId: Array of Answers

@@ -10,7 +10,7 @@ namespace EForms.API.Core.Dtos.Container
         public string Header { get; set; }
         public string Description { get; set; }
         public int Position { get; set; }
-        public int ColumnRepresentation { get; set; }
+        public int? ColumnRepresentation { get; set; }
         public List<QuestionToInsertDto> Questions { get; set; }
     }
 }

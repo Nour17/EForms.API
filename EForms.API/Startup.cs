@@ -9,6 +9,8 @@ using Microsoft.OpenApi.Models;
 using NLog;
 using System.IO;
 using ErrorHandlingService;
+using AutoMapper;
+using MappingProfile = EForms.API.Core.Helpers.MappingProfile;
 
 namespace EForms.API
 {
@@ -48,6 +50,17 @@ namespace EForms.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EForms API", Version = "v1" });
             });
+
+            // AutoMapper
+            #region AutoMapper
+            var mapperConfig = new MapperConfiguration(c =>
+            {
+                c.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

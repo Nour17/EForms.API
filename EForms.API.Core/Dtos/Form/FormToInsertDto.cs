@@ -13,7 +13,8 @@ namespace EForms.API.Core.Dtos.Form
         [Required]
         public string Header { get; set; }
         public string Description { get; set; }
-        public int ColumnRepresentation { get; set; } = 1;
+        [Required]
+        public int? ColumnRepresentation { get; set; } = 1;
         public int Position { get; set; } = 0;
         [Required]
         public string UserId { get; set; }

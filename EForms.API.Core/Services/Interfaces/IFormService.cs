@@ -10,11 +10,11 @@ namespace EForms.API.Core.Services.Interfaces
 {
     public interface IFormService
     {
-        Task<Form> AddForm(Form formToAdd);
+        Task<Form> AddForm(Models.Form formToAdd);
         Task<Form> GetForm(string id);
         Task<bool> UpdateForm(string id, Form updatedForm);
         Task<List<Form>> GetForms();
         Form ValidateFormAnswers(Form form, FormAnswersDto formAnswers);
-        bool IsReceivedFormValid(FormToInsertDto formToInsert);
+        bool IsReceivedFormValid(Models.Form formToInsert);
     }
 }
