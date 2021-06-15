@@ -17,21 +17,21 @@ namespace EForms.API.Core.Helpers
     {
         public MappingProfile()
         {
-            CreateMap<FormToInsertDto, Models.Form>();
-            CreateMap<SectionToInsertDto, Models.Section>()
+            CreateMap<FormToInsertDto, Infrastructure.Models.Form>();
+            CreateMap<SectionToInsertDto, Infrastructure.Models.Section>()
                         .BeforeMap((s, d) => d.InternalId = ObjectId.GenerateNewId().ToString());
-            CreateMap<QuestionToInsertDto, Models.Question>()
+            CreateMap<QuestionToInsertDto, Infrastructure.Models.Question>()
                         .BeforeMap((s, d) => d.InternalId = ObjectId.GenerateNewId().ToString());
-            CreateMap<OptionsToAddDto, Models.Options>();
-            CreateMap<RangeToAddDto, Models.Range>();
-            CreateMap<RestrictionToAddDto, Models.Restriction>();
+            CreateMap<OptionsToAddDto, Infrastructure.Models.Options>();
+            CreateMap<RangeToAddDto, Infrastructure.Models.Range>();
+            CreateMap<RestrictionToAddDto, Infrastructure.Models.Restriction>();
 
-            CreateMap<Models.Form, Infrastructure.Models.Form>();
-            CreateMap<Models.Section, Infrastructure.Models.Section>();
-            CreateMap<Models.Question, Infrastructure.Models.Question>();
-            CreateMap<Models.Options, Infrastructure.Models.Options>();
-            CreateMap<Models.Range, Infrastructure.Models.Range>();
-            CreateMap<Models.Restriction, Infrastructure.Models.Restriction>();
+            //CreateMap<Models.Form, Infrastructure.Models.Form>();
+            //CreateMap<Models.Section, Infrastructure.Models.Section>();
+            //CreateMap<Models.Question, Infrastructure.Models.Question>();
+            //CreateMap<Models.Options, Infrastructure.Models.Options>();
+            //CreateMap<Models.Range, Infrastructure.Models.Range>();
+            //CreateMap<Models.Restriction, Infrastructure.Models.Restriction>();
         }
     }
 }

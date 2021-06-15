@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Contracts;
 using EForms.API.Core.Dtos.Answer;
+using EForms.API.Core.Dtos.Container;
 using EForms.API.Core.Dtos.Form;
+using EForms.API.Core.Dtos.Section;
 using EForms.API.Core.Services.Interfaces;
 using EForms.API.Core.Services.RestrictionsServices.Factory;
 using EForms.API.Infrastructure.Models;
@@ -27,7 +29,7 @@ namespace EForms.API.Core.Services
             _mapper = mapper;
         }
 
-        public async Task<Form> AddForm(Models.Form formToAdd)
+        public async Task<Form> AddForm(FormToInsertDto formToAdd)
         {
             var infrastructureFormToAdd = _mapper.Map<Form>(formToAdd);
 
@@ -66,12 +68,12 @@ namespace EForms.API.Core.Services
             return fetchedForms;
         }
         // Check availability of at least one question on the entire form either in questions or a specific section
-        public bool IsReceivedFormValid(Models.Form formToInsert)
+        public bool IsReceivedFormValid(FormToInsertDto formToInsert)
         {
             _logger.LogInfo("Checking validity of Incoming Form");
 
             // Check if form have any questions
-            if (containQuestions<Models.Form>(formToInsert))
+            if (containQuestions<FormToInsertDto>(formToInsert))
             {
                 _logger.LogInfo("Incoming Form is valid");
                 return true;
@@ -80,9 +82,9 @@ namespace EForms.API.Core.Services
             // Check if form's sections have any questions in atleast one of them
             if (formToInsert.Sections != null)
             {
-                foreach (Models.Section sectionToInsert in formToInsert.Sections)
+                foreach (SectionToInsertDto sectionToInsert in formToInsert.Sections)
                 {
-                    if (containQuestions<Models.Section>(sectionToInsert))
+                    if (containQuestions<SectionToInsertDto>(sectionToInsert))
                     {
                         _logger.LogInfo("Incoming Form is valid");
                         return true;
@@ -227,7 +229,7 @@ namespace EForms.API.Core.Services
 
             return question;
         }
-        private bool containQuestions<T>(Models.Interfaces.IContainerElement questionContainer)
+        private bool containQuestions<T>(IContainerToCreateDto questionContainer)
         {
             if (questionContainer.Questions != null)
             {

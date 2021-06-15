@@ -31,16 +31,14 @@ namespace EForms.API.Controllers
         {
             try
             {
-                var fromModelToInsert = _mapper.Map<Form>(formToInsertDto);
-
                 // Check availability of at least one question on the entire form either in questions or a specific section
-                bool isValid = _formService.IsReceivedFormValid(fromModelToInsert);
+                bool isValid = _formService.IsReceivedFormValid(formToInsertDto);
                 if (!isValid)
                 {
                     return BadRequest("Incoming Form is invalid: Form must atleast have one question!!");
                 }
 
-                var createdForm = await _formService.AddForm(fromModelToInsert);
+                var createdForm = await _formService.AddForm(formToInsertDto);
 
                 return Ok(createdForm);
             }
@@ -77,22 +75,23 @@ namespace EForms.API.Controllers
             return Ok(fetchedForm);
         }
 
-        //[HttpPost("{id}/answer")]
-        //public async Task<IActionResult> AnswerForm([FromRoute] string id, [FromBody] FormAnswersDto formAnswersDto)
-        //{
-        //    var fetchedForm = await _formService.GetForm(id);
+        [HttpPost("{id}/answer")]
+        public async Task<IActionResult> AnswerForm([FromRoute] string id, [FromBody] FormAnswersDto formAnswersDto)
+        {
+            var fetchedForm = await _formService.GetForm(id);
 
-        //    try
-        //    {
-        //        // Add all user's answers on one form at once
-        //        Form formWithAnswers = _formService.ValidateFormAnswers(fetchedForm, formAnswersDto);
-        //        var isFormUpdated = await _formService.UpdateForm(id, fetchedForm);
+            try
+            {
+                // Add all user's answers on one form at once
+                var formWithAnswers = _formService.ValidateFormAnswers(fetchedForm, formAnswersDto);
+                var isFormUpdated = await _formService.UpdateForm(id, fetchedForm);
 
-        //        return Ok(isFormUpdated);
-        //    } catch(Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+                return Ok(isFormUpdated);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
