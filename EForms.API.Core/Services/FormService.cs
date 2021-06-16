@@ -143,8 +143,6 @@ namespace EForms.API.Core.Services
                     x += $"{errorMessage.QuestionId}: {errorMessage.Content}"; 
                 }
                 throw new Exception(x);
-
-                //throw new Exception(string.Join(", ", errorMessages));
             }
         }
         // Add questions' answers and whenever an invalid answer exist halt (throw exception) and proceed with collecting all the wrong answers25525  

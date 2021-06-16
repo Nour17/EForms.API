@@ -6,6 +6,9 @@ using System;
 using Contracts;
 using AutoMapper;
 using EForms.API.Core.Models;
+using EForms.API.Core.Dtos.Answer;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace EForms.API.Controllers
 {

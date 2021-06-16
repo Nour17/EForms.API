@@ -6,7 +6,7 @@ namespace EForms.API.Core.Dtos.Restriction
     public class RestrictionToAddDto
     {
         [Required]
-        [Range(1, 21, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+        [Range(1, 24, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
         public int Condition { get; set; }
         public string RightOperand { get; set; }
         public string ExtraOperand { get; set; }
