@@ -11,12 +11,12 @@ namespace EForms.API.Core.Services.ValidationsService.Restrictions
         public override bool checkRestriction(string userAnswer, string rightOperand)
         {
             int rightOperandToInt = StringToIntConverstion(rightOperand);
-            int userAnswerToInt = StringToIntConverstion(userAnswer);
+            int numberOfChosenAnswers = StringToIntConverstion(userAnswer);
 
             // Check if rightOperandToInt and user's answer is not 0 as it is an indicator that the conversion is done successfuly
-            if (rightOperandToInt != 0 && userAnswerToInt != 0)
+            if (rightOperandToInt != 0 && numberOfChosenAnswers != 0)
                 // Check if the restriction is fullfilled 
-                if (userAnswerToInt == rightOperandToInt)
+                if (numberOfChosenAnswers == rightOperandToInt)
                     return true;
 
             return false;

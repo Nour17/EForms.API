@@ -14,7 +14,6 @@ namespace EForms.API.Core.Services.Interfaces
         Task<Form> GetForm(string id);
         Task<bool> UpdateForm(string id, Form updatedForm);
         Task<List<Form>> GetForms();
-        Form ValidateFormAnswers(Form form, FormAnswersDto formAnswers);
-        bool IsReceivedFormValid(FormToInsertDto formToInsert);
+        bool IsValid(FormToInsertDto formToInsert);
     }
 }

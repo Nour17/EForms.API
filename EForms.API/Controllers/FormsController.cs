@@ -9,6 +9,10 @@ using EForms.API.Core.Models;
 using EForms.API.Core.Dtos.Answer;
 using System.Collections.Generic;
 using System.Collections;
+using EForms.API.Infrastructure.Models;
+using EForms.API.Infrastructure.Models.Interfaces;
+using EForms.API.Infrastructure.Models.Answers;
+using Answer = EForms.API.Infrastructure.Models.Answer;
 
 namespace EForms.API.Controllers
 {
@@ -17,14 +21,17 @@ namespace EForms.API.Controllers
     public class FormsController : ControllerBase
     { 
         private readonly IFormService _formService;
+        private readonly IAnswerService _answerService;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
 
         public FormsController(IFormService formService,
+                                IAnswerService answerService,
                                 ILoggerManager logger,
                                 IMapper mapper)
         {
             _formService = formService;
+            _answerService = answerService;
             _logger = logger;
             _mapper = mapper;
         }
@@ -35,7 +42,7 @@ namespace EForms.API.Controllers
             try
             {
                 // Check availability of at least one question on the entire form either in questions or a specific section
-                bool isValid = _formService.IsReceivedFormValid(formToInsertDto);
+                bool isValid = _formService.IsValid(formToInsertDto);
                 if (!isValid)
                 {
                     return BadRequest("Incoming Form is invalid: Form must atleast have one question!!");
@@ -79,14 +86,42 @@ namespace EForms.API.Controllers
         }
 
         [HttpPost("{id}/answer")]
-        public async Task<IActionResult> AnswerForm([FromRoute] string id, [FromBody] FormAnswersDto formAnswersDto)
+        public async Task<IActionResult> AnswerForm([FromRoute] string id, [FromBody] FormAnswersToInsertDto formAnswersDto)
         {
             var fetchedForm = await _formService.GetForm(id);
 
             try
             {
-                // Add all user's answers on one form at once
-                var formWithAnswers = _formService.ValidateFormAnswers(fetchedForm, formAnswersDto);
+                var validatedForm = _answerService.ValidateFormAnswers(fetchedForm, formAnswersDto);
+
+                if (!validatedForm.IsValid)
+                    return BadRequest(validatedForm.Answers);
+
+                FormAnswers x = new FormAnswers();
+                x.UserId = validatedForm.UserId;
+                List<Answer> answers = new List<Answer>();
+               
+                foreach(var answer in validatedForm.Answers)
+                {
+                    if (answer.Answer != null)
+                        answers.Add(new StringAnswer
+                        {
+                            QuestionId = answer.QuestionId,
+                            Answer = answer.Answer
+                        });
+                    else
+                    {
+                        answers.Add(new ListOfStringsAnswer
+                        {
+                            QuestionId = answer.QuestionId,
+                            Answers = answer.Answers
+                        });
+                    }
+                }
+                x.Answers = answers;
+                return Ok(answers);
+                fetchedForm.FormAnswers.Add(x);
+
                 var isFormUpdated = await _formService.UpdateForm(id, fetchedForm);
 
                 return Ok(isFormUpdated);

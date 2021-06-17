@@ -28,22 +28,35 @@ namespace EForms.API.Infrastructure.Models
         File = 11
     }
 
-    public class Question : IElement
+    public class Question : IElement, IContained
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string InternalId { get; set; } = ObjectId.GenerateNewId().ToString();
-        public string Header { get; set; } = "Untitled";
+        public string Header { get; set; }
         public string Description { get; set; }
         public int Position { get; set; }
         public bool IsRequired { get; set; } = false;
         public QuestionGenre Genre { get; set; }
         public QuestionType Type { get; set; }
-        public Options Options { get; set; } = null;
-        public Range Range { get; set; } = null;
-        public Restriction Restriction { get; set; } = null;
-        [BsonDateTimeOptions]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        [BsonDateTimeOptions]
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        [BsonIgnoreIfNull]
+        public Options Options { get; set; }
+        [BsonIgnoreIfNull]
+        public Range Range { get; set; }
+        [BsonIgnoreIfNull]
+        public Restriction Restriction { get; set; }
+        public bool IsOptionBased()
+        {
+            if (Type == QuestionType.Dropdown
+             || Type == QuestionType.RadioButton
+             || Type == QuestionType.CheckBox)
+                return true;
+            return false;
+        }
+        public bool IsRangeBased()
+        {
+            if (Type == QuestionType.RangeInput)
+                return true;
+            return false;
+        }
     }
 }

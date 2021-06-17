@@ -8,7 +8,7 @@ using System.Text;
 
 namespace EForms.API.Core.Dtos.Form
 {
-    public class FormToInsertDto : IContainerToCreateDto
+    public class FormToInsertDto : IContainerToInsertDto
     {
         [Required]
         public string Header { get; set; }

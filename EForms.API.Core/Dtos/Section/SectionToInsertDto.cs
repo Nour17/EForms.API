@@ -7,7 +7,7 @@ using System.Text;
 
 namespace EForms.API.Core.Dtos.Section
 {
-    public class SectionToInsertDto : IContainerToCreateDto
+    public class SectionToInsertDto : IContainerToInsertDto
     {
         [Required]
         public string Header { get; set; }

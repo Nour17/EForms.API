@@ -5,7 +5,7 @@ using System.Text;
 
 namespace EForms.API.Core.Dtos.Range
 {
-    public class RangeToAddDto
+    public class RangeToInsertDto
     {
         [Required]
         public string LeftLabel { get; set; }

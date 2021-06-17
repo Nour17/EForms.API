@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using MongoDB.Bson;
+using EForms.API.Infrastructure.Models.Interfaces;
 
 namespace EForms.API.Core.Helpers
 {
@@ -23,8 +24,11 @@ namespace EForms.API.Core.Helpers
             CreateMap<QuestionToInsertDto, Infrastructure.Models.Question>()
                         .BeforeMap((s, d) => d.InternalId = ObjectId.GenerateNewId().ToString());
             CreateMap<OptionsToAddDto, Infrastructure.Models.Options>();
-            CreateMap<RangeToAddDto, Infrastructure.Models.Range>();
-            CreateMap<RestrictionToAddDto, Infrastructure.Models.Restriction>();
+            CreateMap<RangeToInsertDto, Infrastructure.Models.Range>();
+            CreateMap<RestrictionToInsertDto, Infrastructure.Models.Restriction>();
+
+            CreateMap<FormAnswersToReturnDto, Infrastructure.Models.FormAnswers>()
+                        .BeforeMap((s, d) => d.InternalId = ObjectId.GenerateNewId().ToString());
 
             //CreateMap<Models.Form, Infrastructure.Models.Form>();
             //CreateMap<Models.Section, Infrastructure.Models.Section>();

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EForms.API.Core.Dtos.Restriction
 {
-    public class RestrictionToAddDto
+    public class RestrictionToInsertDto
     {
         [Required]
         [Range(1, 24, ErrorMessage = "Value for {0} must be between {1} and {2}.")]

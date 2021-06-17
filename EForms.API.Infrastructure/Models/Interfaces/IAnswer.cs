@@ -1,15 +1,14 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace EForms.API.Infrastructure.Models.Interfaces
 {
-    public interface IElement
+    public interface IAnswer
     {
-        [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string InternalId { get; set; }
-        public string Header { get; set; }
-        public string Description { get; set; }
+        public string QuestionId { get; set; }
     }
 }

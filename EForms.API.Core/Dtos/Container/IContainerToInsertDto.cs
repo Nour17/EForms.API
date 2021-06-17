@@ -5,7 +5,7 @@ using System.Text;
 
 namespace EForms.API.Core.Dtos.Container
 {
-    public interface IContainerToCreateDto
+    public interface IContainerToInsertDto
     {
         public string Header { get; set; }
         public string Description { get; set; }

@@ -18,7 +18,7 @@ namespace EForms.API
 
             // Services
             services.AddTransient<IFormService, FormService>();
-
+            services.AddTransient<IAnswerService, AnswerService>();
         }
 
         public static void ConfigureLoggerService(this IServiceCollection services)

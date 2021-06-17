@@ -23,8 +23,8 @@ namespace EForms.API.Core.Dtos.Question
         // Options Related Data
         public OptionsToAddDto Options { get; set; }
         // Range Related Data
-        public RangeToAddDto Range { get; set; }
+        public RangeToInsertDto Range { get; set; }
         // Restriction realted data
-        public RestrictionToAddDto Restriction { get; set; }
+        public RestrictionToInsertDto Restriction { get; set; }
     }
 }

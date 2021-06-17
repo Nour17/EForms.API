@@ -6,11 +6,11 @@ using System.Text;
 
 namespace EForms.API.Core.Dtos.Form
 {
-    public class FormAnswersDto
+    public class FormAnswersToInsertDto
     {
         [Required]
         public string UserId { get; set; }
         [Required]
-        public List<FormAnswerDto> Answers { get; set; }
+        public List<AnswerToInsertDto> Answers { get; set; }
     }
 }
