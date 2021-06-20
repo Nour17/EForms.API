@@ -19,7 +19,7 @@ namespace EForms.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class FormsController : ControllerBase
-    { 
+    {
         private readonly IFormService _formService;
         private readonly IAnswerService _answerService;
         private readonly ILoggerManager _logger;
@@ -100,26 +100,17 @@ namespace EForms.API.Controllers
                 FormAnswers x = new FormAnswers();
                 x.UserId = validatedForm.UserId;
                 List<Answer> answers = new List<Answer>();
-               
-                foreach(var answer in validatedForm.Answers)
+
+                foreach (var answer in validatedForm.Answers)
                 {
-                    if (answer.Answer != null)
-                        answers.Add(new StringAnswer
-                        {
-                            QuestionId = answer.QuestionId,
-                            Answer = answer.Answer
-                        });
-                    else
+                    answers.Add(new Answer
                     {
-                        answers.Add(new ListOfStringsAnswer
-                        {
-                            QuestionId = answer.QuestionId,
-                            Answers = answer.Answers
-                        });
-                    }
+                        QuestionId = answer.QuestionId,
+                        UserAnswer = answer.Answer
+                    });
                 }
+
                 x.Answers = answers;
-                return Ok(answers);
                 fetchedForm.FormAnswers.Add(x);
 
                 var isFormUpdated = await _formService.UpdateForm(id, fetchedForm);

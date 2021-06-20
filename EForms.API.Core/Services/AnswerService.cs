@@ -8,6 +8,7 @@ using EForms.API.Infrastructure.Models.Answers;
 using EForms.API.Infrastructure.Models.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace EForms.API.Core.Services
@@ -61,15 +62,17 @@ namespace EForms.API.Core.Services
                     {
                         if (question.Type == QuestionType.CheckBox)
                         {
-                            isValid = isAnswerValid(question, answerDto.Answers.Count.ToString());
+                            List<string> userAnswers = answerDto.Answer.Split(',').ToList();
+                            isValid = isAnswerValid(question, userAnswers.Count.ToString());
                         }
                         else
                         {
                             isValid = isAnswerValid(question, answerDto.Answer);
                         }
 
-                        formAnswersToReturn.IsValid = false;
-                        answerToReturn.Message = question.Restriction.CustomErrorMessage;
+                        formAnswersToReturn.IsValid = isValid;
+                        if (!isValid)
+                            answerToReturn.Message = question.Restriction.CustomErrorMessage;
                     }
 
                     formAnswersToReturn.Answers.Add(answerToReturn);
