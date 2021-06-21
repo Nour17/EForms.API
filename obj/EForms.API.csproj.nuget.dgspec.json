@@ -1,0 +1,324 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API/EForms.API.csproj": {}
+  },
+  "projects": {
+    "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Core/EForms.API.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Core/EForms.API.Core.csproj",
+        "projectName": "EForms.API.Core",
+        "projectPath": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Core/EForms.API.Core.csproj",
+        "packagesPath": "/home/nour/.nuget/packages/",
+        "outputPath": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Core/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/nour/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {
+              "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Infrastructure/EForms.API.Infrastructure.csproj": {
+                "projectPath": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Infrastructure/EForms.API.Infrastructure.csproj"
+              },
+              "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Repository/EForms.API.Repository.csproj": {
+                "projectPath": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Repository/EForms.API.Repository.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[8.1.1, )"
+            },
+            "MongoDB.Bson": {
+              "target": "Package",
+              "version": "[2.12.0, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.12.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.409/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Infrastructure/EForms.API.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Infrastructure/EForms.API.Infrastructure.csproj",
+        "projectName": "EForms.API.Infrastructure",
+        "projectPath": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Infrastructure/EForms.API.Infrastructure.csproj",
+        "packagesPath": "/home/nour/.nuget/packages/",
+        "outputPath": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Infrastructure/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/nour/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "MongoDB.Bson": {
+              "target": "Package",
+              "version": "[2.12.0, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.12.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.409/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Repository/EForms.API.Repository.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Repository/EForms.API.Repository.csproj",
+        "projectName": "EForms.API.Repository",
+        "projectPath": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Repository/EForms.API.Repository.csproj",
+        "packagesPath": "/home/nour/.nuget/packages/",
+        "outputPath": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Repository/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/nour/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {
+              "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Infrastructure/EForms.API.Infrastructure.csproj": {
+                "projectPath": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Infrastructure/EForms.API.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.4, )"
+            },
+            "MongoDB.Bson": {
+              "target": "Package",
+              "version": "[2.12.0, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.12.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.409/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API/EForms.API.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API/EForms.API.csproj",
+        "projectName": "EForms.API",
+        "projectPath": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API/EForms.API.csproj",
+        "packagesPath": "/home/nour/.nuget/packages/",
+        "outputPath": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/nour/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {
+              "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Core/EForms.API.Core.csproj": {
+                "projectPath": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Core/EForms.API.Core.csproj"
+              },
+              "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Infrastructure/EForms.API.Infrastructure.csproj": {
+                "projectPath": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Infrastructure/EForms.API.Infrastructure.csproj"
+              },
+              "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Repository/EForms.API.Repository.csproj": {
+                "projectPath": "/home/nour/Documents/ILead/Eforms/EForms.API-Refactoring_AutoMapper/EForms.API.Repository/EForms.API.Repository.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[8.1.1, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.4, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "Microsoft.OpenApi": {
+              "target": "Package",
+              "version": "[1.2.3, )"
+            },
+            "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
+              "target": "Package",
+              "version": "[1.10.13, )"
+            },
+            "MongoDB.Bson": {
+              "target": "Package",
+              "version": "[2.12.0, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.12.0, )"
+            },
+            "NLog": {
+              "target": "Package",
+              "version": "[4.7.10, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "ServiceStack": {
+              "target": "Package",
+              "version": "[5.11.0, )"
+            },
+            "Swashbuckle.AspNetCore.Swagger": {
+              "target": "Package",
+              "version": "[6.1.0, )"
+            },
+            "Swashbuckle.AspNetCore.SwaggerGen": {
+              "target": "Package",
+              "version": "[6.1.0, )"
+            },
+            "Swashbuckle.AspNetCore.SwaggerUI": {
+              "target": "Package",
+              "version": "[6.1.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.409/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

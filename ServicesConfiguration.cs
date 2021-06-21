@@ -1,0 +1,26 @@
+﻿using EForms.API.Core.Services;
+using EForms.API.Core.Services.Interfaces;
+using EForms.API.Repository.Data.Repositories;
+using EForms.API.Repository.Data.Repositories.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace EForms.API
+{
+    public static class ServicesConfiguration
+    {
+        public static void AddCustomServices(this IServiceCollection services)
+        {
+            // Repositories
+            services.AddTransient<IFormRepository, FormRepository>();
+            services.AddTransient<IAnswerRepository, AnswerRepository>();
+
+            // Services
+            services.AddTransient<IFormService, FormService>();
+            services.AddTransient<IAnswerService, AnswerService>();
+        }
+
+        public static void ConfigureLoggerService(this IServiceCollection services)
+        {
+        }
+    }
+}

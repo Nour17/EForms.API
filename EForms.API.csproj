@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>201d5893-5cd5-4cdb-bc81-97512f640b52</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="nlog.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="nlog.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="Microsoft.OpenApi" Version="1.2.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
+    <PackageReference Include="MongoDB.Bson" Version="2.12.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.12.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NLog" Version="4.7.10" />
+    <PackageReference Include="ServiceStack" Version="5.11.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EForms.API.Core\EForms.API.Core.csproj" />
+    <ProjectReference Include="..\EForms.API.Infrastructure\EForms.API.Infrastructure.csproj" />
+    <ProjectReference Include="..\EForms.API.Repository\EForms.API.Repository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Contracts">
+      <HintPath>..\..\LoggerService\LoggerService\bin\Debug\netcoreapp3.1\Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="ErrorHandlingService">
+      <HintPath>..\..\LoggerService\ErrorHandlingService\bin\Debug\netcoreapp3.1\ErrorHandlingService.dll</HintPath>
+    </Reference>
+    <Reference Include="LoggerService">
+      <HintPath>..\..\LoggerService\LoggerService\bin\Debug\netcoreapp3.1\LoggerService.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+
+</Project>
