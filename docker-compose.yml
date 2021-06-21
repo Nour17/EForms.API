@@ -1,0 +1,23 @@
+version: '3.1'
+
+services:
+  portainer:
+    image: portainer/portainer-ce
+  
+  pgadmin:
+    image: dpage/pgadmin4  
+
+  eformdb:
+    image: mongo:4.4.4
+
+  eform.api:
+    image: ${DOCKER_REGISTRY-}eformapi
+    restart: always
+    build: 
+      context: .
+      dockerfile: Dockerfile
+
+  volumes:
+    mongo_data:
+    portainer_data:
+    pgadmin_data: 
