@@ -1,8 +1,8 @@
 ﻿using EForms.API.Infrastructure.Enums;
 
-namespace EForms.API.Infrastructure.Models
+namespace EForms.API.Core.Models
 {
-    public class Restriction
+    public class RestrictionCore
     {
         public RestrictionType Condition { get; set; }
         public string RightOperand { get; set; }

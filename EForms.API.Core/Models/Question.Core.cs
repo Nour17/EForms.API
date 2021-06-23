@@ -1,26 +1,20 @@
-﻿using EForms.API.Infrastructure.Enums;
-using EForms.API.Infrastructure.Models.Interfaces;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using EForms.API.Core.Models.Interfaces;
+using EForms.API.Infrastructure.Enums;
 
-namespace EForms.API.Infrastructure.Models
+namespace EForms.API.Core.Models
 {
-    public class Question : IElement, IContained
+    public class QuestionCore : IElementCore, IContainedCore
     {
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string InternalId { get; set; } = ObjectId.GenerateNewId().ToString();
+        public string InternalId { get; set; }
         public string Header { get; set; }
         public string Description { get; set; }
         public int Position { get; set; }
         public bool IsRequired { get; set; } = false;
         public QuestionGenre Genre { get; set; }
         public QuestionType Type { get; set; }
-        [BsonIgnoreIfNull]
-        public Options Options { get; set; }
-        [BsonIgnoreIfNull]
-        public Range Range { get; set; }
-        [BsonIgnoreIfNull]
-        public Restriction Restriction { get; set; }
+        public OptionsCore Options { get; set; }
+        public RangeCore Range { get; set; }
+        public RestrictionCore Restriction { get; set; }
         public bool IsOptionBased()
         {
             if (Type == QuestionType.Dropdown

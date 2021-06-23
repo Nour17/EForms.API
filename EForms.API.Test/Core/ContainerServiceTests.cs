@@ -1,7 +1,4 @@
-﻿using EForms.API.Test.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EForms.API.Core.Models;
 using Xunit;
 
 namespace EForms.API.Test.Core
@@ -9,10 +6,10 @@ namespace EForms.API.Test.Core
     public class ContainerServiceTests
     {
         [Theory]
-        [MemberData(nameof(TestDataGenerator.GetFormFromDataGeneraor), MemberType = typeof(TestDataGenerator))]
-        public void CreateContainer_ValidFormShouldWork(Form form)
+        [MemberData(nameof(TestDataGenerator.GetCorrectFormFromDataGeneraor), MemberType = typeof(TestDataGenerator))]
+        public void CreateContainer_ValidFormShouldWork(FormCore form)
         {
-
+            
         }
     }
 }

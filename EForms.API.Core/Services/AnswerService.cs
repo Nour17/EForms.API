@@ -1,14 +1,11 @@
-﻿using EForms.API.Core.Dtos.Answer;
-using EForms.API.Core.Dtos.Form;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using EForms.API.Core.Models;
 using EForms.API.Core.Services.Interfaces;
 using EForms.API.Core.Services.RestrictionsServices.Factory;
 using EForms.API.Infrastructure.Models;
-using EForms.API.Infrastructure.Models.Answers;
-using EForms.API.Infrastructure.Models.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using EForms.API.Infrastructure.Enums;
 
 namespace EForms.API.Core.Services
 {
@@ -37,17 +34,17 @@ namespace EForms.API.Core.Services
         /// <param name="form"></param>
         /// <param name="formAnswers"></param>
         /// <returns></returns>
-        public FormAnswersToReturnDto ValidateFormAnswers(Form form, FormAnswersToInsertDto formAnswers)
+        public FormAnswersCore ValidateFormAnswers(FormCore form, FormAnswersCore formAnswers)
         {
             try
             {
-                FormAnswersToReturnDto formAnswersToReturn = new FormAnswersToReturnDto();
+                FormAnswersCore formAnswersToReturn = new FormAnswersCore();
                 formAnswersToReturn.UserId = formAnswers.UserId;
 
-                foreach (AnswerToInsertDto answerDto in formAnswers.Answers)
+                foreach (AnswerCore answerDto in formAnswers.Answers)
                 {
-                    Question question = getQuestionFromDocument(form, answerDto.QuestionId);
-                    AnswerToReturnDto answerToReturn = createAnswer(answerDto.QuestionId, answerDto.Answer);
+                    QuestionCore question = getQuestionFromDocument(form, answerDto.QuestionId);
+                    AnswerCore answerToReturn = createAnswer(answerDto.QuestionId, answerDto.UserAnswer);
 
                     bool isValid = false;
 
@@ -55,12 +52,12 @@ namespace EForms.API.Core.Services
                     {
                         if (question.Type == QuestionType.CheckBox)
                         {
-                            List<string> userAnswers = answerDto.Answer.Split(',').ToList();
+                            List<string> userAnswers = answerDto.UserAnswer.Split(',').ToList();
                             isValid = isAnswerValid(question, userAnswers.Count.ToString());
                         }
                         else
                         {
-                            isValid = isAnswerValid(question, answerDto.Answer);
+                            isValid = isAnswerValid(question, answerDto.UserAnswer);
                         }
 
                         formAnswersToReturn.IsValid = isValid;
@@ -72,26 +69,25 @@ namespace EForms.API.Core.Services
                 }
 
                 return formAnswersToReturn;
-
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                throw new Exception(e.Message);
             }
         }
 
-        private bool isAnswerValid(Question question, string userAnswer)
+        private bool isAnswerValid(QuestionCore question, string userAnswer)
         {
             return RestrictionsFactory.ApplyRestriction(question.Restriction, userAnswer);
         }
-        private AnswerToReturnDto createAnswer(string questionId, string userAnswer)
+        private AnswerCore createAnswer(string questionId, string userAnswer)
         {
             try
             {
-                return new AnswerToReturnDto
+                return new AnswerCore
                 {
                     QuestionId = questionId,
-                    Answer = userAnswer
+                    UserAnswer = userAnswer
                 };
             }
             catch (Exception ex)
@@ -99,16 +95,16 @@ namespace EForms.API.Core.Services
                 throw new System.ArgumentException($"Could not populate the new answer for question {questionId}: {ex.Message}", ex);
             }
         }
-        private Question getQuestionFromDocument(Form form, string questionId)
+        private QuestionCore getQuestionFromDocument(FormCore form, string questionId)
         {
             // If the question found in Form questions
-            Question question = form.Questions.Find(x => x.InternalId == questionId);
+            QuestionCore question = form.Questions.Find(x => x.InternalId == questionId);
 
             // If the question is in a certain section
             if (question == null)
             {
                 // loop over all the sections until the question is found
-                foreach (Section section in form.Sections)
+                foreach (SectionCore section in form.Sections)
                 {
                     question = section.Questions.Find(x => x.InternalId == questionId);
                     if (question != null)

@@ -4,12 +4,14 @@ using EForms.API.Core.Services.ValidationsService.Restrictions;
 using System;
 using System.Globalization;
 using EForms.API.Core.Services.ValidationsService.Abstractions;
+using EForms.API.Core.Models;
+using EForms.API.Infrastructure.Enums;
 
 namespace EForms.API.Core.Services.RestrictionsServices.Factory
 {
     public static class RestrictionsFactory
     {
-        public static bool ApplyRestriction(Restriction restriction, string userAnswer)
+        public static bool ApplyRestriction(RestrictionCore restriction, string userAnswer)
         {
             // Create new instance based on the restriction type
             var restrictionObject = CreateRestriction(restriction);
@@ -43,7 +45,7 @@ namespace EForms.API.Core.Services.RestrictionsServices.Factory
             }
         }
 
-        public static ValidationService CreateRestriction(Restriction restriction)
+        public static ValidationService CreateRestriction(RestrictionCore restriction)
         {
             switch (restriction.Condition)
             {

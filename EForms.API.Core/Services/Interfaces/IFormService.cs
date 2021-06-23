@@ -1,19 +1,15 @@
-﻿using EForms.API.Core.Dtos.Form;
-using EForms.API.Core.Dtos.Question;
-using EForms.API.Infrastructure.Models;
-using System;
+﻿using EForms.API.Core.Models;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EForms.API.Core.Services.Interfaces
 {
     public interface IFormService
     {
-        Task<Form> AddForm(FormToInsertDto formToAdd);
-        Task<Form> GetForm(string id);
-        Task<bool> UpdateForm(string id, Form updatedForm);
-        Task<List<Form>> GetForms();
-        bool IsValid(FormToInsertDto formToInsert);
+        Task<FormCore> AddForm(FormCore formToAdd);
+        Task<FormCore> GetForm(string id);
+        Task<bool> UpdateForm(string id, FormCore updatedForm);
+        Task<List<FormCore>> GetForms();
+        bool IsValid(FormCore formToInsert);
     }
 }

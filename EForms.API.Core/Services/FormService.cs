@@ -1,13 +1,8 @@
 ﻿using AutoMapper;
-using EForms.API.Core.Dtos.Answer;
-using EForms.API.Core.Dtos.Container;
-using EForms.API.Core.Dtos.Form;
-using EForms.API.Core.Dtos.Section;
+using EForms.API.Core.Models;
+using EForms.API.Core.Models.Interfaces;
 using EForms.API.Core.Services.Interfaces;
-using EForms.API.Core.Services.RestrictionsServices.Factory;
 using EForms.API.Infrastructure.Models;
-using EForms.API.Infrastructure.Models.Answers;
-using EForms.API.Infrastructure.Models.Interfaces;
 using EForms.API.Repository.Data.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -27,19 +22,20 @@ namespace EForms.API.Core.Services
             _mapper = mapper;
         }
 
-        public async Task<Form> AddForm(FormToInsertDto formToAdd)
+        public async Task<FormCore> AddForm(FormCore formToAdd)
         {
             var infrastructureFormToAdd = _mapper.Map<Form>(formToAdd);
 
             // Add the form to the DB
-            var addedForm = await _formRepository.AddForm<Form>(infrastructureFormToAdd);
+            Form addedForm = await _formRepository.AddForm<Form>(infrastructureFormToAdd);
 
             if (addedForm == null)
                 throw new Exception("Adding form to DB failed!!");
 
-            return addedForm;
+            var formToFormCore = _mapper.Map<FormCore>(addedForm);
+            return formToFormCore;
         }
-        public async Task<Form> GetForm(string id)
+        public async Task<FormCore> GetForm(string id)
         {
             var fetchedForm = await _formRepository.GetForm<Form>(id);
 
@@ -47,15 +43,18 @@ namespace EForms.API.Core.Services
             if (fetchedForm == null)
                 throw new Exception("This form doesn't exist!!");
 
-            return fetchedForm;
+            var formToFormCore = _mapper.Map<FormCore>(fetchedForm);
+            return formToFormCore;
         }
-        public async Task<bool> UpdateForm(string id, Form updatedForm)
+        public async Task<bool> UpdateForm(string id, FormCore updatedForm)
         {
-            var form = await _formRepository.UpdateForm<Form>(id, updatedForm);
+            var infrastructureFormToUpdate = _mapper.Map<Form>(updatedForm);
 
-            return form;
+            var isUpdated = await _formRepository.UpdateForm<Form>(id, infrastructureFormToUpdate);
+
+            return isUpdated;
         }
-        public async Task<List<Form>> GetForms()
+        public async Task<List<FormCore>> GetForms()
         {
             var fetchedForms = await _formRepository.GetForms<Form>();
 
@@ -63,13 +62,14 @@ namespace EForms.API.Core.Services
             if (fetchedForms == null)
                 throw new Exception("No forms exist!!");
 
-            return fetchedForms;
+            var formsToFormCore = _mapper.Map<List<FormCore>>(fetchedForms);
+            return formsToFormCore;
         }
         // Check availability of at least one question on the entire form either in questions or a specific section
-        public bool IsValid(FormToInsertDto formToInsert)
+        public bool IsValid(FormCore formToInsert)
         {
             // Check if form have any questions
-            if (containQuestions<FormToInsertDto>(formToInsert))
+            if (containQuestions<FormCore>(formToInsert))
             {
                 return true;
             }
@@ -77,9 +77,9 @@ namespace EForms.API.Core.Services
             // Check if form's sections have any questions in atleast one of them
             if (formToInsert.Sections != null)
             {
-                foreach (SectionToInsertDto sectionToInsert in formToInsert.Sections)
+                foreach (SectionCore sectionToInsert in formToInsert.Sections)
                 {
-                    if (containQuestions<SectionToInsertDto>(sectionToInsert))
+                    if (containQuestions<SectionCore>(sectionToInsert))
                     {
                         return true;
                     }
@@ -88,7 +88,7 @@ namespace EForms.API.Core.Services
 
             return false;
         }
-        private bool containQuestions<T>(IContainerToInsertDto questionContainer)
+        private bool containQuestions<T>(IContainerCore questionContainer)
         {
             if (questionContainer.Questions != null)
             {

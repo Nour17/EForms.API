@@ -8,9 +8,8 @@ using System;
 using Microsoft.OpenApi.Models;
 using NLog;
 using System.IO;
-using ErrorHandlingService;
 using AutoMapper;
-using MappingProfile = EForms.API.Core.Helpers.MappingProfile;
+using MappingProfile = EForms.API.Helpers.MappingProfile;
 
 namespace EForms.API
 {

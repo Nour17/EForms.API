@@ -1,13 +1,9 @@
-﻿using EForms.API.Core.Dtos.Form;
-using EForms.API.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EForms.API.Core.Models;
 
 namespace EForms.API.Core.Services.Interfaces
 {
     public interface IAnswerService
     {
-        public FormAnswersToReturnDto ValidateFormAnswers(Form form, FormAnswersToInsertDto formAnswers);
+        public FormAnswersCore ValidateFormAnswers(FormCore form, FormAnswersCore formAnswers);
     }
 }

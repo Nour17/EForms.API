@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using EForms.API.Infrastructure.Models;
+using EForms.API.Infrastructure.Enums;
 using MongoDB.Driver;
 
 namespace EForms.API.Repository.Data
