@@ -30,7 +30,7 @@ namespace EForms.API.Core.Services.ValidationsService
 
             // Convert operand value from string to DateTime and if successful copy the value to convertedValue variable
             // else return null
-            if(isSuccess)
+            if(!isSuccess)
                 return null;
 
             return convertedValue;

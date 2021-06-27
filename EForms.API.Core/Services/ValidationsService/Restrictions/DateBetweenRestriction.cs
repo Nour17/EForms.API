@@ -14,7 +14,7 @@ namespace EForms.API.Core.Services.ValidationsService.Restrictions
             // Check if rightOperandToDateTime and user's answer is not null as it is an indicator that the conversion is done successfuly
             if (rightOperandToDateTime != null && extraOperandToDateTime != null && userAnswerToDateTime != null)
                 // Check if the restriction is fullfilled 
-                if (rightOperandToDateTime < userAnswerToDateTime && userAnswerToDateTime > extraOperandToDateTime)
+                if (rightOperandToDateTime < userAnswerToDateTime && userAnswerToDateTime < extraOperandToDateTime)
                     return true;
 
             return false;
