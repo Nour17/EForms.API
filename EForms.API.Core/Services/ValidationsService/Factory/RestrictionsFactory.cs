@@ -1,11 +1,8 @@
-﻿using EForms.API.Core.Services.ValidationsService;
-using EForms.API.Infrastructure.Models;
-using EForms.API.Core.Services.ValidationsService.Restrictions;
-using System;
-using System.Globalization;
-using EForms.API.Core.Services.ValidationsService.Abstractions;
+﻿using EForms.API.Core.Services.ValidationsService.Restrictions;
 using EForms.API.Core.Models;
 using EForms.API.Infrastructure.Enums;
+using EForms.API.Core.Services.ValidationService;
+using System;
 
 namespace EForms.API.Core.Services.RestrictionsServices.Factory
 {
@@ -14,123 +11,74 @@ namespace EForms.API.Core.Services.RestrictionsServices.Factory
         public static bool ApplyRestriction(RestrictionCore restriction, string userAnswer)
         {
             // Create new instance based on the restriction type
-            var restrictionObject = CreateRestriction(restriction);
+            // var restrictionObject = CreateRestriction(restriction);
+            // return restrictionObject.checkRestriction(userAnswer, restriction);
 
-            if (restrictionObject == null)
-            {
-                return false;
-            }
-
-            if(string.IsNullOrWhiteSpace(restriction.RightOperand) && string.IsNullOrWhiteSpace(restriction.ExtraOperand))
-            {
-                // Call the checkRestriction with one parameter which dont include any operand to be checked with
-                ValidateSingleInput checker = (ValidateSingleInput)restrictionObject;
-                return checker.checkRestriction(userAnswer);
-            }
-            // Check if the restriction type have extraOperand
-            else if (restriction.HaveExtraOperand())
-            {
-                // If yes validate the extraOperand sent
-                if (string.IsNullOrWhiteSpace(restriction.ExtraOperand))
-                    return false;
-                // Call the checkRestriction with three parameters which include the extra operand logic
-                ValidateTripleInput checker = (ValidateTripleInput)restrictionObject;
-                return checker.checkRestriction(userAnswer, restriction.RightOperand, restriction.ExtraOperand);
-            }
-            else 
-            {
-                // If no Call the checkRestriction with two parameters which exclude the extra operand logic
-                ValidateDoubleInput checker = (ValidateDoubleInput)restrictionObject;
-                return checker.checkRestriction(userAnswer, restriction.RightOperand);
-            }
+            Type type = Type.GetType(restriction.Condition.ToString());
+            var restrictionObject =  (IRestriction)Activator.CreateInstance(type);
+            return restrictionObject.checkRestriction(userAnswer, restriction);
         }
 
-        public static ValidationService CreateRestriction(RestrictionCore restriction)
+        public static IRestriction CreateRestriction(RestrictionCore restriction)
         {
             switch (restriction.Condition)
             {
                 // Normal Text Restriction Check
                 case RestrictionType.MaxStringLength:
-                    return new MaxStringLengthRestriction();
+                    return new MaxStringLength();
                 case RestrictionType.MinStringLength:
-                    return new MinStringLengthRestriction();
+                    return new MinStringLength();
                 case RestrictionType.StringContains:
-                    return new StringContainsRestriction();
+                    return new StringContains();
                 case RestrictionType.StringDontContains:
-                    return new StringDontContainsRestriction();
+                    return new StringDontContains();
                 // Number Restriction Check
                 // I rather remove this condition
                 case RestrictionType.IsNumberInteger:
-                    return new NumberTypeIsIntegerRestriction();
+                    return new IsNumberInteger();
                 case RestrictionType.IsNumberDouble:
-                    return new NumberTypeIsDoubleRestriction();
+                    return new IsNumberDouble();
                 case RestrictionType.NumberIsLessThan:
-                    return new NumberLessThanRestriction();
+                    return new NumberIsLessThan();
                 case RestrictionType.NumberIsLessThanOrEqual:
-                    return new NumberLessThanOrEqualRestriction();
+                    return new NumberIsLessThanOrEqual();
                 case RestrictionType.NumberIsBiggerThan:
-                    return new NumberBiggerThanRestriction();
+                    return new NumberIsBiggerThan();
                 case RestrictionType.NumberIsBiggerThanOrEqual:
-                    return new NumberBiggerThanOrEqualRestriction();
+                    return new NumberIsBiggerThanOrEqual();
                 case RestrictionType.NumberEqual:
-                    return new NumberEqualRestriction();
+                    return new NumberEqual();
                 case RestrictionType.NumberDoNotEqual:
-                    return new NumberNotEqualRestriction();
+                    return new NumberDoNotEqual();
                 case RestrictionType.NumberIsBetween:
-                    return new NumberBetweenRestriction();
+                    return new NumberIsBetween();
                 case RestrictionType.NumberIsNotBetween:
-                    return new NumberNotBetweenRestriction();
+                    return new NumberIsNotBetween();
                 // Date Restriction check
                 case RestrictionType.DateIsAfter:
-                    return new DateAfterRestriction();
-                case RestrictionType.DateEqual:
-                    return new DateEqualRestriction();
+                    return new DateIsAfter();
+                case RestrictionType.DateIsEqual:
+                    return new DateIsEqual();
                 case RestrictionType.DateIsBefore:
-                    return new DateBeforeRestriction();
+                    return new DateIsBefore();
                 case RestrictionType.DateIsBetween:
-                    return new DateBetweenRestriction();
+                    return new DateIsBetween();
                 case RestrictionType.DateIsNotBetween:
-                    return new DateNotBetweenRestriction();
+                    return new DateIsNotBetween();
                 // Checkbox Restriction check
-                case RestrictionType.AtLeastChecked:
-                    return new CheckboxAtLeastCheckRestriction();
-                case RestrictionType.ExactlyChecked:
-                    return new CheckboxAtMostCheckRestriction();
-                case RestrictionType.AtMostChecked:
-                    return new CheckboxExactlyCheckRestriction();
+                case RestrictionType.CheckboxAtLeastChecked:
+                    return new CheckboxAtLeastChecked();
+                case RestrictionType.CheckboxExactlyChecked:
+                    return new CheckboxExactlyChecked();
+                case RestrictionType.CheckboxAtMostChecked:
+                    return new CheckboxAtMostChecked();
                 // Question type restrictions
-                case RestrictionType.Email:
-                    return new EmailTypeRestriction();
-                case RestrictionType.URL:
-                    return new URLTypeRestriction();
+                case RestrictionType.EmailType:
+                    return new EmailType();
+                case RestrictionType.URLType:
+                    return new URLType();
             }
             return null;
-        }
-
-        public static int StringToIntConverstion(string operand)
-        {
-            int convertedValue;
-
-            // Convert operand value from string to int and if successful copy the value to convertedValue variable
-            // else return 0
-            if (!(int.TryParse(operand, out convertedValue)))
-                return 0;
-
-            return convertedValue;
-        }
-        public static DateTime? StringToDateConverstion(string operand)
-        {
-            DateTime convertedValue;
-            CultureInfo provider = CultureInfo.InvariantCulture;
-
-            bool isSuccess = DateTime.TryParseExact(operand, "MM/dd/yyyy", provider, DateTimeStyles.None, out convertedValue);
-
-            // Convert operand value from string to DateTime and if successful copy the value to convertedValue variable
-            // else return null
-            if (isSuccess)
-                return null;
-
-            return convertedValue;
         }
     }
 }

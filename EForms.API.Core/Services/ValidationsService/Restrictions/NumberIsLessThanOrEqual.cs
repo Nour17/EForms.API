@@ -1,14 +1,15 @@
-﻿using EForms.API.Core.Services.ValidationsService.Abstractions;
-using System;
+﻿using EForms.API.Core.Extensions;
+using EForms.API.Core.Models;
+using EForms.API.Core.Services.ValidationService;
 
 namespace EForms.API.Core.Services.ValidationsService.Restrictions
 {
-    public class NumberLessThanOrEqualRestriction : ValidateDoubleInput
+    public class NumberIsLessThanOrEqual : IRestriction
     {
-        public override bool checkRestriction(string userAnswer, string rightOperand)
+        public bool checkRestriction(string userAnswer, RestrictionCore restriction)
         {
-            int rightOperandToInt = StringToIntConverstion(rightOperand);
-            int userAnswerToInt = StringToIntConverstion(userAnswer);
+            int rightOperandToInt = restriction.RightOperand.StringToIntConverstion();
+            int userAnswerToInt = userAnswer.StringToIntConverstion();
 
             // Check if rightOperandToInt and user's answer is not 0 as it is an indicator that the conversion is done successfuly
             if (rightOperandToInt != 0 && userAnswerToInt != 0)

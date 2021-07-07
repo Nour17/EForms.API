@@ -279,7 +279,7 @@ namespace EForms.API.Repository.Data
                                     Genre = QuestionGenre.TextBased,
                                     Type = QuestionType.Date,
                                     Restriction = new Restriction() {
-                                        Condition = RestrictionType.DateEqual,
+                                        Condition = RestrictionType.DateIsEqual,
                                         RightOperand = "06/23/2021",
                                         CustomErrorMessage = "Date should be equal 06/23/2021"
                                     }
@@ -347,7 +347,7 @@ namespace EForms.API.Repository.Data
                                     Genre = QuestionGenre.OptionBased,
                                     Type = QuestionType.CheckBox,
                                     Restriction = new Restriction() {
-                                        Condition = RestrictionType.AtLeastChecked,
+                                        Condition = RestrictionType.CheckboxAtLeastChecked,
                                         RightOperand = "2",
                                         CustomErrorMessage = "Atleast 2 checkboxes should be choosen"
                                     },
@@ -365,7 +365,7 @@ namespace EForms.API.Repository.Data
                                     Genre = QuestionGenre.OptionBased,
                                     Type = QuestionType.CheckBox,
                                     Restriction = new Restriction() {
-                                        Condition = RestrictionType.ExactlyChecked,
+                                        Condition = RestrictionType.CheckboxExactlyChecked,
                                         RightOperand = "2",
                                         CustomErrorMessage = "Exactly 2 checkboxes should be choosen"
                                     },
@@ -383,7 +383,7 @@ namespace EForms.API.Repository.Data
                                     Genre = QuestionGenre.OptionBased,
                                     Type = QuestionType.CheckBox,
                                     Restriction = new Restriction() {
-                                        Condition = RestrictionType.AtMostChecked,
+                                        Condition = RestrictionType.CheckboxAtMostChecked,
                                         RightOperand = "2",
                                         CustomErrorMessage = "Atmost 2 checkboxes should be choosen"
                                     },
@@ -406,7 +406,7 @@ namespace EForms.API.Repository.Data
                                 Genre = QuestionGenre.TextBased,
                                 Type = QuestionType.Email,
                                 Restriction = new Restriction() {
-                                        Condition = RestrictionType.Email,
+                                        Condition = RestrictionType.EmailType,
                                         CustomErrorMessage = "Input shoul be email"
                                 }
                             },
@@ -419,7 +419,7 @@ namespace EForms.API.Repository.Data
                                 Genre = QuestionGenre.TextBased,
                                 Type = QuestionType.URL,
                                 Restriction = new Restriction() {
-                                        Condition = RestrictionType.URL,
+                                        Condition = RestrictionType.URLType,
                                         CustomErrorMessage = "Input shoul be url"
                                 }
                             },

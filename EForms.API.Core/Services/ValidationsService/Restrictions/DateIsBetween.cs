@@ -1,15 +1,17 @@
-﻿using EForms.API.Core.Services.ValidationsService.Abstractions;
+﻿using EForms.API.Core.Extensions;
+using EForms.API.Core.Models;
+using EForms.API.Core.Services.ValidationService;
 using System;
 
 namespace EForms.API.Core.Services.ValidationsService.Restrictions
 {
-    public class DateBetweenRestriction : ValidateTripleInput
+    public class DateIsBetween : IRestriction
     {
-        public override bool checkRestriction(string userAnswer, string rightOperand, string extraOperand)
+        public bool checkRestriction(string userAnswer, RestrictionCore restriction)
         {
-            DateTime? rightOperandToDateTime = StringToDateConverstion(rightOperand);
-            DateTime? extraOperandToDateTime = StringToDateConverstion(extraOperand);
-            DateTime? userAnswerToDateTime = StringToDateConverstion(userAnswer);
+            DateTime? rightOperandToDateTime = restriction.RightOperand.StringToDateConverstion();
+            DateTime? extraOperandToDateTime = restriction.ExtraOperand.StringToDateConverstion();
+            DateTime? userAnswerToDateTime = userAnswer.StringToDateConverstion();
 
             // Check if rightOperandToDateTime and user's answer is not null as it is an indicator that the conversion is done successfuly
             if (rightOperandToDateTime != null && extraOperandToDateTime != null && userAnswerToDateTime != null)

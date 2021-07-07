@@ -20,16 +20,16 @@ namespace EForms.API.Infrastructure.Enums
         NumberIsNotBetween = 14,
         // Date
         DateIsAfter = 15,
-        DateEqual = 16,
+        DateIsEqual = 16,
         DateIsBefore = 17,
         DateIsBetween = 18,
         DateIsNotBetween = 19,
         // Checkbox
-        AtLeastChecked = 20,
-        ExactlyChecked = 21,
-        AtMostChecked = 22,
+        CheckboxAtLeastChecked = 20,
+        CheckboxExactlyChecked = 21,
+        CheckboxAtMostChecked = 22,
         // Question Type
-        Email = 23,
-        URL = 24,
+        EmailType = 23,
+        URLType = 24,
     }
 }

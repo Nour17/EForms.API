@@ -1,14 +1,12 @@
-﻿using EForms.API.Core.Services.ValidationsService.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EForms.API.Core.Models;
+using EForms.API.Core.Services.ValidationService;
 using System.Text.RegularExpressions;
 
 namespace EForms.API.Core.Services.ValidationsService.Restrictions
 {
-    class EmailTypeRestriction : ValidateSingleInput
+    class EmailType : IRestriction
     {
-        public override bool checkRestriction(string userAnswer)
+        public bool checkRestriction(string userAnswer, RestrictionCore restriction)
         {
             Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
             Match match = regex.Match(userAnswer);
